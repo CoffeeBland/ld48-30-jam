@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.coffeebland.state.State;
 
 /**
@@ -27,9 +28,6 @@ public class LogoState extends State {
     private BitmapFont font;
 
     @Override
-    public boolean shouldBeReused() { return true; }
-
-    @Override
     public boolean shouldBeReused() {
         return true;
     }
@@ -38,6 +36,7 @@ public class LogoState extends State {
     public void update(float delta) {
         timeIn += delta;
         if (timeIn > 3000) {
+            System.out.println("asd");
             switchToState(MenuState.class, Color.WHITE.cpy(), TRANSITION_MEDIUM);
         }
     }
@@ -65,8 +64,9 @@ public class LogoState extends State {
             bg = new Texture(bgPixel);
         }
         if (font == null) {
-            FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("mono.ttf"));
-            FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+            FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
+                Gdx.files.internal("font.ttf"));
+            FreeTypeFontParameter parameter = new FreeTypeFontParameter();
             parameter.size = 18;
             font = generator.generateFont(parameter);
             generator.dispose();

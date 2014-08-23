@@ -1,6 +1,7 @@
 package com.coffeebland.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,8 +11,7 @@ import com.coffeebland.state.State;
  * Created by kiasaki on 23/08/2014.
  */
 public class MenuState extends State {
-    private Pixmap blackPixel;
-    private Texture blackPixelText;
+    private Texture bg;
 
     @Override
     public void update(float delta) {
@@ -19,7 +19,8 @@ public class MenuState extends State {
 
     @Override
     public void render(SpriteBatch batch) {
-        batch.draw(blackPixelText, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.setColor(new Color(117, 133, 138, 255));
+        batch.draw(bg, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
     @Override
@@ -29,9 +30,11 @@ public class MenuState extends State {
 
     @Override
     public void onTransitionInStart() {
-        blackPixel = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        blackPixel.drawPixel(0, 0, 0x000000);
-        blackPixelText = new Texture(blackPixel);
+        if (bg == null) {
+            Pixmap bgPixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+            bgPixmap.drawPixel(0, 0, 0xFFFFFF);
+            bg = new Texture(bgPixmap);
+        }
     }
     @Override
     public void onTransitionInFinish() {

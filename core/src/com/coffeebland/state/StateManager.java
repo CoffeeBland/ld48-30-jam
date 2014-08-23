@@ -103,7 +103,7 @@ public class StateManager implements Updateable, Renderable {
                     } else {
                         nextState.getValue().onTransitionInStart();
                     }
-                    Gdx.input.setInputProcessor(currentState.getValue().getInputManager());
+                    Gdx.input.setInputProcessor(nextState.getValue().getInputManager());
                 }
                 // Dispose the current state if it shouln'd be reused
                 if (currentState.hasValue() && !currentState.getValue().shouldBeReused()) {
