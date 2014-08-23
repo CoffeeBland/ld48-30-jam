@@ -1,8 +1,9 @@
 package com.coffeebland.carto;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.coffeebland.game.Actor;
 import com.coffeebland.game.Camera;
+import com.coffeebland.util.CameraRenderable;
+import com.coffeebland.util.Updateable;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -10,7 +11,11 @@ import java.util.Set;
 /**
  * Created by dagothig on 8/23/14.
  */
-public class Street extends Actor {
+public class Street implements Updateable, CameraRenderable {
+    public static final float
+            PEDESTRIANS_START_DISTANCE = 100,
+            PEDESTRIANS_END_DISTANCE = 50;
+
     private double x, y, length;
     private boolean isVertical;
 
@@ -46,7 +51,7 @@ public class Street extends Actor {
         }
     }
     @Override
-    public void update(long delta) {
+    public void update(float delta) {
         for (Building building: buildings) {
             building.update(delta);
         }

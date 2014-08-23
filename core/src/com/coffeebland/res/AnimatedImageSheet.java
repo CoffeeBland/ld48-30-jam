@@ -1,13 +1,14 @@
 package com.coffeebland.res;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
  * Created by dagothig on 8/23/14.
  */
 public class AnimatedImageSheet extends ImageSheet {
-    public AnimatedImageSheet(String ref, int framesX, int framesY, int fps, boolean loop) {
-       super(ref, framesX, framesY);
+    public AnimatedImageSheet(String ref, int frameWidth, int frameHeight, int fps, boolean loop) {
+       super(ref, frameWidth, frameHeight);
         this.loop = loop;
         setFps(fps);
     }
@@ -37,6 +38,9 @@ public class AnimatedImageSheet extends ImageSheet {
 
     public void render(SpriteBatch batch, float x, float y, boolean flip) {
         render(batch, x, y, frameX, frameY, flip);
+    }
+    public void render(SpriteBatch batch, float x, float y, boolean flip, Color tint) {
+        render(batch, x, y, frameX, frameY, flip, tint);
     }
 
     public void update(float delta) {

@@ -1,13 +1,14 @@
 package com.coffeebland.carto;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.coffeebland.game.Actor;
 import com.coffeebland.game.Camera;
+import com.coffeebland.util.CameraRenderable;
+import com.coffeebland.util.Updateable;
 
 /**
  * Created by dagothig on 8/23/14.
  */
-public class Building extends Actor {
+public class Building implements Updateable, CameraRenderable {
     private BuildingType type;
     private double position;
     private Street street;
@@ -18,7 +19,7 @@ public class Building extends Actor {
     }
 
     @Override
-    public void update(long delta) {
+    public void update(float delta) {
 
     }
 }

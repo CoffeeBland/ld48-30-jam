@@ -20,14 +20,14 @@ public class HotSpot extends ApplicationAdapter {
 		batch = new SpriteBatch();
         batch.setBlendFunction(Gdx.gl.GL_SRC_ALPHA, Gdx.gl.GL_ONE_MINUS_SRC_ALPHA);
 		batch.enableBlending();
-        time = System.currentTimeMillis();
+        time = System.nanoTime();
         stateManager = new StateManager(LogoState.class);
 	}
 
 	@Override
 	public void render () {
-        long current = System.currentTimeMillis();
-        stateManager.update(current - time);
+        long current = System.nanoTime();
+        stateManager.update((current - time) / 1000000);
         time = current;
 
         Color col = stateManager.getBackgroundColor();
