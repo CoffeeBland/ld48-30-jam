@@ -75,7 +75,7 @@ public class InputDispatcher implements InputProcessor {
     }
 
     public void update(float delta) {
-        Gdx.app.getInput().isKey
+        //Gdx.app.getInput().isKey
     }
 
     public void listenTo(Control control, OnKeyListener listener) {

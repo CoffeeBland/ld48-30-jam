@@ -18,7 +18,7 @@ public class GameState extends State {
     private InputProcessor inputProcessor = new InputProcessor() {
         @Override
         public boolean keyDown(int keycode) {
-            
+            return false;
         }
 
         @Override
