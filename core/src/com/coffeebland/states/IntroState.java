@@ -10,6 +10,11 @@ import com.coffeebland.state.State;
 public class IntroState extends State {
 
     @Override
+    public boolean shouldBeReused() {
+        return true;
+    }
+
+    @Override
     public void update(float delta) {
     }
 

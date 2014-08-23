@@ -22,6 +22,11 @@ public class LogoState extends State {
     private Texture img;
 
     @Override
+    public boolean shouldBeReused() {
+        return true;
+    }
+
+    @Override
     public void update(float delta) {
         timeIn += delta;
         if (timeIn > 4000) {

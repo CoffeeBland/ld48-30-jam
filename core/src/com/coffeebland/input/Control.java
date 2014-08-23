@@ -1,4 +1,4 @@
-package com.coffeebland.game;
+package com.coffeebland.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

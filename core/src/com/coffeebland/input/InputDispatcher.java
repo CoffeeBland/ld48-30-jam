@@ -1,6 +1,7 @@
-package com.coffeebland.game;
+package com.coffeebland.input;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.coffeebland.util.Maybe;
 
@@ -51,11 +52,31 @@ public class InputDispatcher implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        Maybe<Control> maybe = Control.getControl(button);
+        if (!maybe.hasValue())
+            return false;
+
+        Control control = maybe.getValue();
+        if (mouseListeners.containsKey(control)) {
+            mouseListeners.get(control).onMouseDown(screenX, screenY);
+            return true;
+        }
+
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        Maybe<Control> maybe = Control.getControl(button);
+        if (!maybe.hasValue())
+            return false;
+
+        Control control = maybe.getValue();
+        if (mouseListeners.containsKey(control)) {
+            mouseListeners.get(control).onMouseUp(screenX, screenY);
+            return true;
+        }
+
         return false;
     }
 
@@ -75,7 +96,19 @@ public class InputDispatcher implements InputProcessor {
     }
 
     public void update(float delta) {
-        //Gdx.app.getInput().isKey
+        Input input = Gdx.app.getInput();
+        for (Map.Entry<Control, OnKeyListener> entry : keyListeners.entrySet()) {
+            if (input.isKeyPressed(entry.getKey().getKeyCode())) {
+                entry.getValue().onKeyIsDown();
+            }
+        }
+
+        for (Map.Entry<Control, OnMouseListener> entry : mouseListeners.entrySet()) {
+            int x = input.getX(), y = input.getY();
+            if (input.isButtonPressed(entry.getKey().getKeyCode())) {
+                entry.getValue().onMouseIsDown(x, y);
+            }
+        }
     }
 
     public void listenTo(Control control, OnKeyListener listener) {
@@ -91,8 +124,8 @@ public class InputDispatcher implements InputProcessor {
         public void onKeyIsDown();
     }
     public static interface OnMouseListener {
-        public void OnMouseDown(int x, int y);
-        public void OnMouseUp(int x, int y);
-        public void OnMouseIsDown(int x, int y);
+        public void onMouseDown(int x, int y);
+        public void onMouseUp(int x, int y);
+        public void onMouseIsDown(int x, int y);
     }
 }

@@ -1,14 +1,14 @@
 package com.coffeebland.state;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.coffeebland.input.InputDispatcher;
+import com.coffeebland.util.Renderable;
+import com.coffeebland.util.Updateable;
 
 /**
  * Created by dagothig on 8/23/14.
  */
-public abstract class State<StateArgs> {
+public abstract class State<StateArgs> implements Updateable, Renderable {
     public static final long TRANSITION_SHORT = 250;
     public static final long TRANSITION_MEDIUM = 500;
     public static final long TRANSITION_LONG = 1000;
@@ -17,6 +17,12 @@ public abstract class State<StateArgs> {
 
     private StateManager stateManager;
     private Color backgroundColor;
+    private InputDispatcher inputManager = new InputDispatcher();
+
+
+    public InputDispatcher getInputManager() {
+        return inputManager;
+    }
 
     public void setStateManager(StateManager stateManager) {
         this.stateManager = stateManager;
@@ -39,9 +45,7 @@ public abstract class State<StateArgs> {
         this.backgroundColor = color;
     }
 
-    public boolean shouldBeReused() { return false; }
-    public abstract void update(float delta);
-    public abstract void render(SpriteBatch batch);
+    public abstract boolean shouldBeReused();
 
     public void onTransitionInStart(StateArgs args) {}
     public void onTransitionInStart() {}

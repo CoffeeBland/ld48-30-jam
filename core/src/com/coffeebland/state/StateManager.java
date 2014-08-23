@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.coffeebland.util.Maybe;
+import com.coffeebland.util.Renderable;
+import com.coffeebland.util.Updateable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,13 +15,13 @@ import java.util.Map;
 /**
  * Created by dagothig on 8/23/14.
  */
-public class StateManager {
+public class StateManager implements Updateable, Renderable {
     public StateManager(Class initialState) {
         whitePixel = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         whitePixel.drawPixel(0, 0, 0xFFFFFFFF);
         whitePixelText = new Texture(whitePixel);
 
-        switchToState(initialState, Color.BLACK.cpy(), State.TRANSITION_SHORT);
+        switchToState(initialState, Color.BLACK.cpy(), State.TRANSITION_LONG);
     }
 
     private Map<String, State> states = new HashMap<String, State>();
@@ -29,6 +31,7 @@ public class StateManager {
     private Texture whitePixelText;
     private Color transitionColor;
     private long remainingTransitionTime, transitionLength;
+    private boolean hasSwitched = false;
 
     public Color getBackgroundColor() {
         if (currentState.hasValue())
@@ -53,10 +56,12 @@ public class StateManager {
         this.remainingTransitionTime = transitionLength;
         this.transitionLength = transitionLength;
         this.switchArgs = switchArgs;
-        if (currentState.hasValue())
+        if (currentState.hasValue()) {
             currentState.getValue().onTransitionOutStart();
-        else
+        } else {
             remainingTransitionTime /= 2;
+        }
+        hasSwitched = false;
     }
     public void switchToState(Class<? extends State> stateType, Color transitionColor, long transitionLength, Object switchArgs) {
         switchToState(stateType, transitionColor, transitionLength, new Maybe<Object>(switchArgs));
@@ -74,13 +79,14 @@ public class StateManager {
             batch.setColor(Color.WHITE);
         }
     }
+    @Override
     public void render(SpriteBatch batch) {
         if (currentState.hasValue())
             currentState.getValue().render(batch);
         renderTransition(batch);
     }
 
-    private void updateTransition(long delta) {
+    private void updateTransition(float delta) {
         if (remainingTransitionTime > 0) {
             remainingTransitionTime -= delta;
 
@@ -88,7 +94,7 @@ public class StateManager {
                 currentState.getValue().onTransitionInFinish();
             }
 
-            if (remainingTransitionTime <= transitionLength / 2) {
+            if (remainingTransitionTime <= transitionLength / 2 && !hasSwitched) {
                 if (currentState.hasValue())
                     currentState.getValue().onTransitionOutFinish();
                 if (nextState.hasValue()) {
@@ -97,19 +103,22 @@ public class StateManager {
                     } else {
                         nextState.getValue().onTransitionInStart();
                     }
+                    Gdx.input.setInputProcessor(currentState.getValue().getInputManager());
                 }
                 // Dispose the current state if it shouln'd be reused
                 if (currentState.hasValue() && !currentState.getValue().shouldBeReused()) {
                     states.remove(currentState.getValue().getClass().getName());
                 }
                 currentState = nextState;
+                hasSwitched = true;
             }
         }
-
     }
-    public void update(long delta) {
+    @Override
+    public void update(float delta) {
         updateTransition(delta);
         if (currentState.hasValue())
+            currentState.getValue().getInputManager().update(delta);
             currentState.getValue().update(delta);
     }
 }

@@ -24,6 +24,11 @@ public class MenuState extends State {
     }
 
     @Override
+    public boolean shouldBeReused() {
+        return true;
+    }
+
+    @Override
     public void onTransitionInStart() {
         blackPixel = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         blackPixel.drawPixel(0, 0, 0x000000);
