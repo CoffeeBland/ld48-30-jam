@@ -71,6 +71,7 @@ public class StateManager {
             transitionColor.a = 1 - (Math.abs(remainingTransitionTime - halfLength) / (float)halfLength);
             batch.setColor(transitionColor);
             batch.draw(whitePixelText, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            batch.setColor(Color.WHITE);
         }
     }
     public void render(SpriteBatch batch) {
