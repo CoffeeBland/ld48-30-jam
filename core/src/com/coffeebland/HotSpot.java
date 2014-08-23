@@ -27,7 +27,7 @@ public class HotSpot extends ApplicationAdapter {
 	@Override
 	public void render () {
         long current = System.nanoTime();
-        stateManager.update((current - time) / 1000000);
+        stateManager.update((current - time) / 1000000f);
         time = current;
 
         Color col = stateManager.getBackgroundColor();
