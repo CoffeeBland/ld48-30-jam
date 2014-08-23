@@ -14,12 +14,12 @@ import java.util.Map;
  * Created by dagothig on 8/23/14.
  */
 public class StateManager {
-    public StateManager() {
+    public StateManager(Class initialState) {
         whitePixel = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         whitePixel.drawPixel(0, 0, 0xFFFFFFFF);
         whitePixelText = new Texture(whitePixel);
 
-        switchToState(TempState.class, Color.BLACK.cpy(), State.TRANSITION_SHORT);
+        switchToState(initialState, Color.BLACK.cpy(), State.TRANSITION_SHORT);
     }
 
     private Map<String, State> states = new HashMap<String, State>();

@@ -37,7 +37,7 @@ public abstract class State<StateArgs> {
         this.backgroundColor = color;
     }
 
-    public abstract boolean shouldBeReused();
+    public boolean shouldBeReused() { return false; }
     public abstract void update(float delta);
     public abstract void render(SpriteBatch batch);
 
