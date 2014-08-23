@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.coffeebland.util.StateManager;
+import com.coffeebland.state.StateManager;
 
 public class HotSpot extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -17,7 +17,9 @@ public class HotSpot extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+        batch.setBlendFunction(Gdx.gl.GL_SRC_ALPHA, Gdx.gl.GL_ONE_MINUS_SRC_ALPHA);
+		batch.enableBlending();
+        img = new Texture("badlogic.jpg");
         time = System.currentTimeMillis();
         stateManager = new StateManager();
 	}
@@ -32,7 +34,7 @@ public class HotSpot extends ApplicationAdapter {
         Gdx.gl.glClearColor(col.r, col.g, col.b, col.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        stateManager.render();
+        stateManager.render(batch);
         batch.end();
     }
 }
