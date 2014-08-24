@@ -16,6 +16,8 @@ import java.util.Set;
 public enum Control {
     MOVE_LEFT(Input.Keys.LEFT),
     MOVE_RIGHT(Input.Keys.RIGHT),
+    MOVE_UP(Input.Keys.UP),
+    MOVE_DOWN(Input.Keys.DOWN),
     RAISE_CELLPHONE(Input.Keys.SPACE),
     ENTER(Input.Keys.ENTER),
     EXIT_MENU(Input.Keys.ESCAPE),

@@ -92,12 +92,6 @@ public class Pedestrian implements Updateable, CameraRenderable {
         cell.setFrameY(frameY);
     }
 
-    public void setAnimationY(int y) {
-        skin.setFrameY(y);
-        clothes.setFrameY(y);
-        hair.setFrameY(y);
-    }
-
     public void runLeft() {
         isWalking = true;
         speed -= SPEED_RUN;
@@ -107,12 +101,16 @@ public class Pedestrian implements Updateable, CameraRenderable {
         speed += SPEED_RUN;
     }
 
-    @Override
-    public void update(float delta) {
+    public void updateAnims(float delta) {
         skin.update(delta);
         clothes.update(delta);
         hair.update(delta);
         cell.update(delta);
+    }
+
+    @Override
+    public void update(float delta) {
+        updateAnims(delta);
 
         speed /= SLOW_FACTOR;
         if (Math.abs(speed) < SLOW_RATE) {
