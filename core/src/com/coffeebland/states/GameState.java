@@ -133,15 +133,15 @@ public class GameState extends State<GameState.GameStateInfo> {
             public void onKeyIsDown() {}
         });
 
-        setBackgroundColor(new Color(0x544A40FF));
+        setBackgroundColor(new Color(0x7FE6FFFF));
     }
 
     private Map map;
     private Street currentStreet;
     private Maybe<Street> nextStreet = new Maybe<Street>();
-    private Set<Pedestrian> pedestrians;
+    private Set<Pedestrian> pedestrians = new HashSet<Pedestrian>();
     private Camera camera = new Camera();
-    private Maybe<Pedestrian> player;
+    private Maybe<Pedestrian> player = new Maybe<Pedestrian>();
     private UIOverlay uiOverlay = new UIOverlay();
     private int
             remainingWIFI = MAX_WIFI,
@@ -251,7 +251,8 @@ public class GameState extends State<GameState.GameStateInfo> {
 
     @Override
     public void render(SpriteBatch batch) {
-        currentStreet.render(batch, camera);
+        if (currentStreet != null)
+            currentStreet.render(batch, camera);
         for (Pedestrian pedestrian : pedestrians) {
             pedestrian.render(batch, camera);
         }
@@ -287,6 +288,7 @@ public class GameState extends State<GameState.GameStateInfo> {
         camera.setPosition(info.position);
         map = info.map;
         setCurrentStreet(info.street);
+        System.out.println("initialized");
 
         remainingBattery = MAX_BATTERY;
         batteryDuration = BATTERY_DURATION;
@@ -296,6 +298,7 @@ public class GameState extends State<GameState.GameStateInfo> {
 
     @Override
     public void onTransitionInStart() {
+        System.out.println("booya");
         if (!player.hasValue()) {
             throw new RuntimeException("Cannot transition to game state without passing player");
         }

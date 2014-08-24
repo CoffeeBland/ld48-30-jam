@@ -1,5 +1,6 @@
 package com.coffeebland.game.carto;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -44,6 +45,15 @@ public class Street implements Updateable, CameraRenderable {
         END;
     }
 
+    public static Pixmap[] BG_BUILDINGS = {
+            new Pixmap(Gdx.files.internal("sprites/buildings/city-house-1.png")),
+            new Pixmap(Gdx.files.internal("sprites/buildings/city-house-2.png")),
+            new Pixmap(Gdx.files.internal("sprites/buildings/city-house-3.png")),
+            new Pixmap(Gdx.files.internal("sprites/buildings/city-house-4.png")),
+            new Pixmap(Gdx.files.internal("sprites/buildings/city-house-5.png")),
+            new Pixmap(Gdx.files.internal("sprites/buildings/city-house-6.png"))
+    };
+
     public Street(float x, float y, float length, boolean isVertical, long seed) {
         this.x = x;
         this.y = y;
@@ -53,8 +63,10 @@ public class Street implements Updateable, CameraRenderable {
     }
 
     private float x, y, length;
+    private int buildingBgReservedUpToX;
     private boolean isVertical;
     private Maybe<Texture> background = new Maybe<Texture>();
+    private Maybe<Texture> buildingsBackground = new Maybe<Texture>();
     private Random rand;
 
     public Set<Street> connectingStreets = new HashSet<Street>();
@@ -161,6 +173,15 @@ public class Street implements Updateable, CameraRenderable {
                 break;
         }
     }
+    public void renderBuildings(Pixmap pixmap, int x, RoadType type) {
+        if (type != RoadType.START_HORIZONTAL_CROSSING && type != RoadType.HORIZONTAL_CROSSING && type != RoadType.END_HORIZONTAL_CROSSING) {
+           if (x >= buildingBgReservedUpToX) {
+               Pixmap nextBuilding = BG_BUILDINGS[rand.nextInt(BG_BUILDINGS.length)];
+               buildingBgReservedUpToX = x + nextBuilding.getWidth();
+               pixmap.drawPixmap(nextBuilding, 0, 0, nextBuilding.getWidth(), nextBuilding.getHeight(), x, TILE_SIZE, nextBuilding.getWidth(), nextBuilding.getHeight());
+           }
+        }
+    }
     public void initTexture() {
         if (background.hasValue())
             return;
@@ -169,6 +190,8 @@ public class Street implements Updateable, CameraRenderable {
         ROAD_SHEET.initPixmap("sprites/road.png");
         Pixmap pixmap = new Pixmap((int)length, (ROAD_WIDTH + EARTH_WIDTH + SIDEWALK_WIDTH + OVERFLOW_WIDTH) * TILE_SIZE, Pixmap.Format.RGBA8888);
         connectingStreetTiles = new Street[(int)Math.ceil(length / TILE_SIZE)];
+
+        Pixmap buildingsPixmap = new Pixmap((int)length, 7 * TILE_SIZE, Pixmap.Format.RGBA8888);
 
         for (int i = 0; i < length; i+= TILE_SIZE) {
             RoadType type = RoadType.REGULAR;
@@ -202,9 +225,11 @@ public class Street implements Updateable, CameraRenderable {
 
             renderRoad(pixmap, i, type);
             renderSideWalk(pixmap, i, type);
+            renderBuildings(buildingsPixmap, i, type);
         }
 
         background = new Maybe<Texture>(new Texture(pixmap));
+        buildingsBackground = new Maybe<Texture>(new Texture(buildingsPixmap));
     }
 
     private float getRelativePosition(Street street) {
@@ -263,6 +288,10 @@ public class Street implements Updateable, CameraRenderable {
         if (background.hasValue()) {
             Texture background = this.background.getValue();
             batch.draw(background, (getStart() - camera.getPosition()) * HotSpot.UPSCALE_RATE, 0 * HotSpot.UPSCALE_RATE, background.getWidth() * HotSpot.UPSCALE_RATE, background.getHeight() * HotSpot.UPSCALE_RATE);
+        }
+        if (buildingsBackground.hasValue()) {
+            Texture background = this.buildingsBackground.getValue();
+            batch.draw(background, (getStart() - camera.getPosition()) * HotSpot.UPSCALE_RATE, (4 * TILE_SIZE) * HotSpot.UPSCALE_RATE, background.getWidth() * HotSpot.UPSCALE_RATE, background.getHeight() * HotSpot.UPSCALE_RATE);
         }
     }
     @Override

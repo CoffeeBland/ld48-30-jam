@@ -10,19 +10,26 @@ import java.util.List;
  */
 public class Map {
     public static Map getMap() {
+        float origin = 89600f;
+        float tileSize = 32f;
+        float buildingSize = 7 * tileSize;
+        float crossingSize = 5 * tileSize;
         List<Street> streets = new ArrayList<Street>();
 
-        for (int i = 0; i < 50; i++) {
-            Street street = new Street(
-                    ((float)Math.random() * 5000),
-                    ((float)Math.random() * 5000),
-                    ((float)Math.random() * 1250) + 500,
-                    Math.random() < 0.5f ? true : false,
-                    ((long)Math.random() * Long.MAX_VALUE)
-            );
-
-            streets.add(street);
-        }
+        streets.add(new Street(
+                origin - (buildingSize * 10) - (crossingSize * 2),
+                origin,
+                ((buildingSize * 10) + (crossingSize * 2)) * 2,
+                false,
+                (long) Math.random() * Long.MAX_VALUE
+        ));
+        streets.add(new Street(
+                origin - (buildingSize * 5) - tileSize,
+                origin - (buildingSize * 10) + (crossingSize),
+                (buildingSize * 10) + (crossingSize),
+                true,
+                (long) Math.random() * Long.MAX_VALUE
+        ));
 
         Map map = new Map(streets);
 

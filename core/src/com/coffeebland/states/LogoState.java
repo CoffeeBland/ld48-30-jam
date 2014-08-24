@@ -55,7 +55,8 @@ public class LogoState extends State {
         batch.setColor(Color.WHITE.cpy());
         batch.draw(img, imgX, imgY);
         font.setColor(Color.BLACK.cpy());
-        font.draw(batch, "Myriam - Dagothig - Mey - kiasaki", (Gdx.graphics.getWidth()/2)-192, 48);
+        String text = "Catiniata - Dagothig - Meysmerized - Kiasaki";
+        font.draw(batch, text, (Gdx.graphics.getWidth()/2)-(font.getBounds(text).width/2), 48);
     }
 
     @Override

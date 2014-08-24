@@ -3,6 +3,7 @@ package com.coffeebland.states;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.coffeebland.game.Pedestrian;
+import com.coffeebland.game.carto.Map;
 import com.coffeebland.game.carto.Street;
 import com.coffeebland.game.phone.AppChat;
 import com.coffeebland.game.phone.AppHome;
@@ -26,8 +27,9 @@ public class IntroState extends State<IntroState.IntroStateInfo> {
     public void switchToGame() {
         GameState.GameStateInfo info = new GameState.GameStateInfo();
         info.player = character;
-        info.street = new Street(0, 0, Street.TILE_SIZE * 32, true, 1337);
-        info.position = info.street.getStart();
+        info.map = Map.getMap();
+        info.street = info.map.getStreets().get(0);
+        info.position = 89600;
         switchToState(GameState.class, Color.WHITE.cpy(), TRANSITION_SHORT, info);
     }
 
@@ -45,20 +47,22 @@ public class IntroState extends State<IntroState.IntroStateInfo> {
     public void update(float delta) {
         timeIn += delta;
 
-        if (timeIn > 5000 && messagesSent[0] == false) {
+        if (timeIn > 2000 && messagesSent[0] == false) {
             messagesSent[0] = true;
-            app.addMessage("Frederik", "Hey, dude, just NEED to download this app called Tindoune. Text me what you think!");
+            app.addMessage("Frederik", "Hey, dude, you NEED to download this app called Tindoune. Text me what you think!");
+            // TEMP
+            switchToGame();
         }
-        if (timeIn > 15000 && messagesSent[1] == false) {
+        if (timeIn > 7000 && messagesSent[1] == false) {
             messagesSent[1] = true;
             app.addMessage("Frederik", "Waiting...");
         }
-        if (timeIn > 20000 && messagesSent[2] == false) {
+        if (timeIn > 9000 && messagesSent[2] == false) {
             messagesSent[2] = true;
             app.addMessage("Me", "Okay okay, getting it ...");
         }
 
-        if (timeIn > 25000 && messagesSent[3] == false) {
+        if (timeIn > 12000 && messagesSent[3] == false) {
             messagesSent[3] = true;
             phone.openApp(new AppHome());
             //app = new TinderApp();
@@ -77,6 +81,7 @@ public class IntroState extends State<IntroState.IntroStateInfo> {
         app = new AppChat();
         phone.openApp(app);
     }
+
     @Override
     public void onTransitionInStart() {
         if (character == null) {
