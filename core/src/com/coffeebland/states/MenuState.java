@@ -106,4 +106,9 @@ public class MenuState extends State {
     public boolean shouldBeReused() {
         return true;
     }
+
+    @Override
+    public String musicRef() {
+        return "music/menu.mp3";
+    }
 }

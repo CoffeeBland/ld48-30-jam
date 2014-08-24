@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.coffeebland.HotSpot;
 import com.coffeebland.game.carto.Map;
 import com.coffeebland.game.carto.Street;
 import com.coffeebland.game.Camera;
@@ -12,6 +13,7 @@ import com.coffeebland.game.UIOverlay;
 import com.coffeebland.game.phone.Phone;
 import com.coffeebland.input.Control;
 import com.coffeebland.input.InputDispatcher;
+import com.coffeebland.res.Images;
 import com.coffeebland.state.State;
 import com.coffeebland.util.ColorUtil;
 import com.coffeebland.util.Maybe;
@@ -25,8 +27,14 @@ import java.util.Set;
 public class GameState extends State<GameState.GameStateInfo> {
     public static final int
             MAX_BATTERY = 5,
+            BATTERY_DURATION = 1500,
             MAX_WIFI = 4,
-            STREET_CHANGE_TRANSITION_DURATION = 250;
+            WIFI_DURATION = 1000,
+            STREET_CHANGE_TRANSITION_DURATION = 250,
+            WIFI_RANGE = 250,
+            WIFI_EXTENDED_RANGE = 500,
+            NO_WIFI_DECAL_X = 12,
+            NO_WIFI_DECAL_Y = -12;
 
     public GameState() {
         super();
@@ -135,10 +143,15 @@ public class GameState extends State<GameState.GameStateInfo> {
     private Camera camera = new Camera();
     private Maybe<Pedestrian> player;
     private UIOverlay uiOverlay = new UIOverlay();
-    private int remainingWIFI = MAX_WIFI, remainingBattery = MAX_BATTERY, transitionDurationRemaining;
-    private boolean transitionLeaving;
+    private int
+            remainingWIFI = MAX_WIFI,
+            wifiDuration = WIFI_DURATION,
+            remainingBattery = MAX_BATTERY,
+            batteryDuration = BATTERY_DURATION,
+            transitionDurationRemaining;
+    private boolean transitionLeaving, hasWifi = false;
     private Phone phone;
-    private Texture whitePixel = ColorUtil.whitePixel();
+    private Texture whitePixel = ColorUtil.whitePixel(), noWifi = Images.get("sprites/character/no_wifi.png");
     private Color overlayColor = Color.BLACK.cpy();
 
     public void setCurrentStreet(Street street) {
@@ -207,8 +220,31 @@ public class GameState extends State<GameState.GameStateInfo> {
                     }
                 }
             }
-        }
 
+            if (batteryDuration > 0) {
+                batteryDuration -= delta;
+            }
+            while (batteryDuration <= 0) {
+                batteryDuration += BATTERY_DURATION;
+                remainingBattery--;
+            }
+
+            hasWifi = currentStreet.getDistanceToClosestWifi(player.getX()) < (player.isHoldingCell() ? WIFI_EXTENDED_RANGE : WIFI_RANGE);
+            if (wifiDuration > 0) {
+                wifiDuration -= delta;
+            }
+            while (wifiDuration <= 0) {
+                wifiDuration += WIFI_DURATION;
+                if (hasWifi)
+                    remainingWIFI = Math.min((remainingWIFI + 1), MAX_WIFI);
+                else
+                    remainingWIFI--;
+
+                if (remainingWIFI <= 0) {
+                    switchToState(GameOverState.class, Color.BLACK.cpy(), TRANSITION_MEDIUM);
+                }
+            }
+        }
 
         phone.update(delta);
     }
@@ -218,6 +254,11 @@ public class GameState extends State<GameState.GameStateInfo> {
         currentStreet.render(batch, camera);
         for (Pedestrian pedestrian : pedestrians) {
             pedestrian.render(batch, camera);
+        }
+
+        if (!hasWifi && player.hasValue()) {
+            Pedestrian player = this.player.getValue();
+            batch.draw(noWifi, (player.getX() - camera.getPosition() + NO_WIFI_DECAL_X) * HotSpot.UPSCALE_RATE, (player.getY() + Pedestrian.FRAME_HEIGHT + NO_WIFI_DECAL_Y) * HotSpot.UPSCALE_RATE, noWifi.getWidth() * HotSpot.UPSCALE_RATE, noWifi.getHeight() * HotSpot.UPSCALE_RATE);
         }
 
         if (transitionDurationRemaining > 0) {
@@ -248,7 +289,9 @@ public class GameState extends State<GameState.GameStateInfo> {
         setCurrentStreet(info.street);
 
         remainingBattery = MAX_BATTERY;
+        batteryDuration = BATTERY_DURATION;
         remainingWIFI = MAX_WIFI;
+        wifiDuration = WIFI_DURATION;
     }
 
     @Override
@@ -256,6 +299,11 @@ public class GameState extends State<GameState.GameStateInfo> {
         if (!player.hasValue()) {
             throw new RuntimeException("Cannot transition to game state without passing player");
         }
+    }
+
+    @Override
+    public String musicRef() {
+        return "music/game.mp3";
     }
 
     public static class GameStateInfo {

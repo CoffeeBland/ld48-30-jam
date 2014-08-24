@@ -152,6 +152,11 @@ public class CharacterSelectionState extends State {
     @Override
     public boolean shouldBeReused() { return false; }
 
+    @Override
+    public String musicRef() {
+        return "music/menu.mp3";
+    }
+
     private void change(int direction) {
         if (selectedButton == CTL_SKIN) {
             selectedSkin = selectedSkin + direction;

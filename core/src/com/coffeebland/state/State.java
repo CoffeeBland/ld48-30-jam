@@ -46,6 +46,9 @@ public abstract class State<StateArgs> implements Updateable, Renderable {
     }
 
     public abstract boolean shouldBeReused();
+    public String musicRef() {
+        return "music/menu.mp3";
+    }
 
     public void onTransitionInStart(StateArgs args) {}
     public void onTransitionInStart() {}

@@ -84,6 +84,11 @@ public class IntroState extends State<IntroState.IntroStateInfo> {
         }
     }
 
+    @Override
+    public String musicRef() {
+        return "music/menu.mp3";
+    }
+
     public static class IntroStateInfo {
         public IntroStateInfo(Pedestrian character) {
             this.character = character;

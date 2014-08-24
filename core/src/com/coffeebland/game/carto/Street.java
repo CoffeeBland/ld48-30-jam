@@ -226,6 +226,9 @@ public class Street implements Updateable, CameraRenderable {
         float tilePos = pos * TILE_SIZE;
         return tilePos + getStart() + TILE_SIZE / 2;
     }
+    public float getDistanceToClosestWifi(float pos) {
+        return Math.abs(getStart() - pos);
+    }
 
     public float getStartX() {
         return x;

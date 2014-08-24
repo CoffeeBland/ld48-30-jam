@@ -46,15 +46,18 @@ public class Pedestrian implements Updateable, CameraRenderable {
     private boolean flip, isWalking, holdCell = false;
     private int animTransitionDuration = 0, animTransitionRemaining = 0;
     private boolean isLeaving;
+    private boolean needsAnimation = false;
 
     public boolean isHoldingCell() {
         return holdCell;
     }
     public void raiseCell() {
         holdCell = true;
+        needsAnimation = true;
     }
     public void lowerCell() {
         holdCell = false;
+        needsAnimation = true;
     }
 
     public void setSkin(String ref, Color skinColor) {
@@ -103,6 +106,25 @@ public class Pedestrian implements Updateable, CameraRenderable {
         clothes.setFrameY(frameY);
         hair.setFrameY(frameY);
         cell.setFrameY(frameY);
+    }
+
+    public void setSingleFrame(int frame) {
+        skin.setSingleFrame(frame);
+        clothes.setSingleFrame(frame);
+        hair.setSingleFrame(frame);
+        cell.setSingleFrame(frame);
+    }
+    public void queueFrame(int frame) {
+        skin.queueFrame(frame);
+        clothes.queueFrame(frame);
+        hair.queueFrame(frame);
+        cell.queueFrame(frame);
+    }
+    public void clearQueue() {
+        skin.clearQueue();
+        clothes.clearQueue();
+        hair.clearQueue();
+        cell.clearQueue();
     }
 
     public void runLeft() {
@@ -173,24 +195,42 @@ public class Pedestrian implements Updateable, CameraRenderable {
 
             x += speed;
 
+            setSingleFrame(-1);
             if (Math.abs(speed) > RUN_BREAKPOINT) {
+                clearQueue();
                 if (holdCell) {
                     setFrameY(FRAME_RUN_CELL);
                 } else {
                     setFrameY(FRAME_RUN);
                 }
-                setFps(CYCLE_FRAMERATE);
+                needsAnimation = false;
             } else if (speed != 0) {
+                clearQueue();
                 if (holdCell) {
                     setFrameY(FRAME_WALK_CELL);
                 } else {
                     setFrameY(FRAME_WALK);
                 }
-                setFps(CYCLE_FRAMERATE);
+                needsAnimation = false;
             } else {
-                setFrameX(0);
+                if (isHoldingCell()) {
+                    if (needsAnimation) {
+                        queueFrame(1);
+                        queueFrame(2);
+                        queueFrame(3);
+                        needsAnimation = false;
+                    }
+                    setSingleFrame(4);
+                } else {
+                    if (needsAnimation) {
+                        queueFrame(4);
+                        queueFrame(5);
+                        queueFrame(6);
+                        needsAnimation = false;
+                    }
+                    setSingleFrame(0);
+                }
                 setFrameY(FRAME_STAND);
-                setFps(0);
             }
         }
     }

@@ -68,4 +68,8 @@ public class LogoState extends State {
     public void onTransitionInFinish() {
     }
 
+    @Override
+    public String musicRef() {
+        return "music/menu.mp3";
+    }
 }

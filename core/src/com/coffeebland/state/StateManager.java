@@ -9,6 +9,7 @@ import com.coffeebland.game.carto.Street;
 import com.coffeebland.game.Pedestrian;
 import com.coffeebland.states.GameState;
 import com.coffeebland.util.Maybe;
+import com.coffeebland.util.MusicManager;
 import com.coffeebland.util.Renderable;
 import com.coffeebland.util.Updateable;
 
@@ -25,8 +26,8 @@ public class StateManager implements Updateable, Renderable {
         whitePixelText = new Texture(whitePixel);
 
         switchToState(initialState, Color.BLACK.cpy(), State.TRANSITION_LONG);
-        /*
-        GameState.GameStateInfo info = new GameState.GameStateInfo();
+
+        /*GameState.GameStateInfo info = new GameState.GameStateInfo();
         info.map = com.coffeebland.game.carto.Map.getMap();
         info.street = info.map.getStreets().get((int)(Math.random() * 50));
         info.player = new Pedestrian(
@@ -36,8 +37,8 @@ public class StateManager implements Updateable, Renderable {
                 0, 0
         );
         info.position = info.street.getStart();
-        switchToState(GameState.class, Color.BLACK.cpy(), State.TRANSITION_LONG, info);
-        */
+        switchToState(GameState.class, Color.BLACK.cpy(), State.TRANSITION_LONG, info);*/
+
     }
 
     private Map<String, State> states = new HashMap<String, State>();
@@ -119,6 +120,7 @@ public class StateManager implements Updateable, Renderable {
                     } else {
                         nextState.getValue().onTransitionInStart();
                     }
+                    MusicManager.play(nextState.getValue().musicRef());
                     Gdx.input.setInputProcessor(nextState.getValue().getInputManager());
                 }
                 // Dispose the current state if it shouln'd be reused

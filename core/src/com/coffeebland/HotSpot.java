@@ -31,10 +31,6 @@ public class HotSpot extends ApplicationAdapter {
         time = System.nanoTime();
         stateManager = new StateManager(LogoState.class);
 	    updateScaleRate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        Music music = Gdx.audio.newMusic(new FileHandle("music/walkingforwifi.mp3"));
-        music.setLooping(true);
-        music.play();
     }
 
 	@Override
