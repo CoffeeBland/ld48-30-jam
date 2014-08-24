@@ -26,7 +26,8 @@ public class StateManager implements Updateable, Renderable {
 
         //switchToState(initialState, Color.BLACK.cpy(), State.TRANSITION_LONG);
         GameState.GameStateInfo info = new GameState.GameStateInfo();
-        info.street = new Street(0, 0, Street.TILE_SIZE * 32, true);
+        info.map = com.coffeebland.game.carto.Map.getMap();
+        info.street = info.map.getStreets().get((int)(Math.random() * 50));
         info.player = new Pedestrian(
                 "sprites/character/char_male.png", new Color(0xE6B6F1FF),
                 "sprites/character/char_male_clothes1.png",

@@ -2,6 +2,7 @@ package com.coffeebland.game;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.coffeebland.game.carto.Street;
 import com.coffeebland.res.AnimatedImageSheet;
 import com.coffeebland.util.CameraRenderable;
 import com.coffeebland.util.Updateable;
@@ -27,7 +28,7 @@ public class Pedestrian implements Updateable, CameraRenderable {
             SLOW_RATE = 0.2f,
             SLOW_FACTOR = 1.03f,
             SPEED_WALK = 0.15f,
-            SPEED_RUN = 0.25f;
+            SPEED_RUN = 0.2f;
 
     public Pedestrian(String skinRef, Color skinColor, String clothesRef, String hairRef, Color hairColor, float x, float y) {
         setSkin(skinRef, skinColor);
@@ -41,8 +42,20 @@ public class Pedestrian implements Updateable, CameraRenderable {
 
     private AnimatedImageSheet skin, clothes, hair, cell;
     private Color skinColor, hairColor;
-    private float x, y, speed;
-    private boolean flip, isWalking, holdCell = true;
+    private float x, y, speed, yBeforeTransition;
+    private boolean flip, isWalking, holdCell = false;
+    private int animTransitionDuration = 0, animTransitionRemaining = 0;
+    private boolean isLeaving;
+
+    public boolean isHoldingCell() {
+        return holdCell;
+    }
+    public void raiseCell() {
+        holdCell = true;
+    }
+    public void lowerCell() {
+        holdCell = false;
+    }
 
     public void setSkin(String ref, Color skinColor) {
         skin = new AnimatedImageSheet(ref, FRAME_WIDTH, FRAME_HEIGHT, CYCLE_FRAMERATE, true, true);
@@ -107,6 +120,21 @@ public class Pedestrian implements Updateable, CameraRenderable {
         speed += SPEED_RUN;
     }
 
+    public void animEnter(int duration) {
+        animTransitionRemaining = animTransitionDuration = duration;
+        isLeaving = false;
+        speed = 0;
+        yBeforeTransition = y;
+        setFps(CYCLE_FRAMERATE);
+    }
+    public void animLeave(int duration) {
+        animTransitionRemaining = animTransitionDuration = duration;
+        isLeaving = true;
+        speed = 0;
+        yBeforeTransition = y;
+        setFps(CYCLE_FRAMERATE);
+    }
+
     @Override
     public void update(float delta) {
         skin.update(delta);
@@ -114,42 +142,58 @@ public class Pedestrian implements Updateable, CameraRenderable {
         hair.update(delta);
         cell.update(delta);
 
-        speed /= SLOW_FACTOR;
-        if (Math.abs(speed) < SLOW_RATE) {
-            speed = 0;
-        } else {
-            if (speed < 0) {
-                if (!isWalking)
-                    speed += SLOW_RATE;
-                flip = true;
-            } else if (speed > 0) {
-                if (!isWalking)
-                    speed -= SLOW_RATE;
-                flip = false;
-            }
-        }
-        isWalking = false;
+        if (animTransitionRemaining > 0) {
+            animTransitionRemaining -= delta;
 
-        x += speed;
+            setFrameY(FRAME_WALK);
+            float scale = (animTransitionRemaining / (float)animTransitionDuration);
+            if (isLeaving)
+                scale = 1 - scale;
+            y = yBeforeTransition + scale * Street.TILE_SIZE;
 
-        if (Math.abs(speed) > RUN_BREAKPOINT) {
-            if (holdCell) {
-                setFrameY(FRAME_RUN_CELL);
-            } else {
-                setFrameY(FRAME_RUN);
+            if (animTransitionRemaining <= 0) {
+                animTransitionRemaining = 0;
+                y = yBeforeTransition;
             }
-            setFps(CYCLE_FRAMERATE);
-        } else if (speed != 0) {
-            if (holdCell) {
-                setFrameY(FRAME_WALK_CELL);
-            } else {
-                setFrameY(FRAME_WALK);
-            }
-            setFps(CYCLE_FRAMERATE);
         } else {
-            setFrameX(0);
-            setFrameY(FRAME_STAND);
-            setFps(0);
+
+            speed /= SLOW_FACTOR;
+            if (Math.abs(speed) < SLOW_RATE && !isWalking) {
+                speed = 0;
+            } else {
+                if (speed < 0) {
+                    if (!isWalking)
+                        speed += SLOW_RATE;
+                    flip = true;
+                } else if (speed > 0) {
+                    if (!isWalking)
+                        speed -= SLOW_RATE;
+                    flip = false;
+                }
+            }
+            isWalking = false;
+
+            x += speed;
+
+            if (Math.abs(speed) > RUN_BREAKPOINT) {
+                if (holdCell) {
+                    setFrameY(FRAME_RUN_CELL);
+                } else {
+                    setFrameY(FRAME_RUN);
+                }
+                setFps(CYCLE_FRAMERATE);
+            } else if (speed != 0) {
+                if (holdCell) {
+                    setFrameY(FRAME_WALK_CELL);
+                } else {
+                    setFrameY(FRAME_WALK);
+                }
+                setFps(CYCLE_FRAMERATE);
+            } else {
+                setFrameX(0);
+                setFrameY(FRAME_STAND);
+                setFps(0);
+            }
         }
     }
 

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.coffeebland.util.Maybe;
+import com.coffeebland.util.Updateable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,7 +14,7 @@ import java.util.Map;
 /**
  * Created by dagothig on 8/23/14.
  */
-public class InputDispatcher implements InputProcessor {
+public class InputDispatcher implements InputProcessor, Updateable {
     private Map<Control, OnKeyListener> keyListeners = new HashMap<Control, OnKeyListener>();
     private Map<Control, OnMouseListener> mouseListeners = new HashMap<Control, OnMouseListener>();
 
@@ -23,7 +24,7 @@ public class InputDispatcher implements InputProcessor {
 
         boolean returnValue = false;
         for (Control control: controls) {
-            if (keyListeners.containsKey(control)) {
+            if (keyListeners.containsKey(control) && control.getKeyCode() == keycode) {
                 keyListeners.get(control).onKeyDown();
                 returnValue = true;
             }
@@ -38,7 +39,7 @@ public class InputDispatcher implements InputProcessor {
 
         boolean returnValue = false;
         for (Control control: controls) {
-            if (keyListeners.containsKey(control)) {
+            if (keyListeners.containsKey(control) && control.getKeyCode() == keycode) {
                 keyListeners.get(control).onKeyUp();
                 returnValue = true;
             }
@@ -83,7 +84,7 @@ public class InputDispatcher implements InputProcessor {
         Collection<Control> controlsToUp = new ArrayList<Control>();
 
         for (Control control: controls) {
-            if (mouseListeners.containsKey(control)) {
+            if (mouseListeners.containsKey(control) && control.getKeyCode() == button) {
                 controlsToUp.add(control);
             }
         }
@@ -111,30 +112,31 @@ public class InputDispatcher implements InputProcessor {
         return false;
     }
 
+    @Override
     public void update(float delta) {
         if (this != Gdx.input.getInputProcessor())
             return;
 
         Input input = Gdx.app.getInput();
-        Collection<Map.Entry<Control, OnKeyListener>> keysToDown = new ArrayList<Map.Entry<Control, OnKeyListener>>();
 
+        // Keys
+        Collection<Map.Entry<Control, OnKeyListener>> keysToDown = new ArrayList<Map.Entry<Control, OnKeyListener>>();
         for (Map.Entry<Control, OnKeyListener> entry : keyListeners.entrySet()) {
             if (input.isKeyPressed(entry.getKey().getKeyCode())) {
                 keysToDown.add(entry);
             }
         }
-
         for (Map.Entry<Control, OnKeyListener> entry : keysToDown) {
             entry.getValue().onKeyIsDown();
         }
 
+        // Mouse
         Collection<Map.Entry<Control, OnMouseListener>> mouseToDown = new ArrayList<Map.Entry<Control, OnMouseListener>>();
         for (Map.Entry<Control, OnMouseListener> entry : mouseListeners.entrySet()) {
             if (input.isButtonPressed(entry.getKey().getKeyCode())) {
                 mouseToDown.add(entry);
             }
         }
-
         int x = input.getX(), y = Gdx.graphics.getHeight() - input.getY();
         for (Map.Entry<Control, OnMouseListener> entry : mouseToDown) {
             entry.getValue().onMouseIsDown(x, y);
