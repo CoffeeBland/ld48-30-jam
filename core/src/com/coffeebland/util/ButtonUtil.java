@@ -7,16 +7,19 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
+
 /**
  * Created by kiasaki on 23/08/2014.
  */
 public class ButtonUtil {
+    static float border = 2;
+    static float padding = 10;
 
     public static void drawButton(SpriteBatch batch, BitmapFont font, String text, float x, float y) {
         Texture bg = ColorUtil.whitePixel();
         TextBounds bounds = font.getBounds(text);
-        float border = 2;
-        float padding = 10;
         float totalSpacing = (padding*2)+(border*2);
 
         // Border
@@ -37,6 +40,19 @@ public class ButtonUtil {
         TextBounds bounds = font.getBounds(text);
         float x = (Gdx.graphics.getWidth()/2) - (bounds.width/2) - 12;
         drawButton(batch, font, text, x, y);
+    }
+
+    public static Rectangle2D.Float getButtonBounds(BitmapFont font, String text, float x, float y) {
+        TextBounds bounds = font.getBounds(text);
+        float totalSpacing = (padding*2)+(border*2);
+
+        return new Rectangle2D.Float(x, y, bounds.width+totalSpacing, bounds.height+totalSpacing);
+    }
+
+    public static Rectangle2D.Float getButtonBoundsCentered(BitmapFont font, String text, float y) {
+        TextBounds bounds = font.getBounds(text);
+        float x = (Gdx.graphics.getWidth() / 2) - (bounds.width / 2) - 12;
+        return getButtonBounds(font, text, x, y);
     }
 
 }

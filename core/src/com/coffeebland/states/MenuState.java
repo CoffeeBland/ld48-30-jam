@@ -13,6 +13,9 @@ import com.coffeebland.util.ButtonUtil;
 import com.coffeebland.util.ColorUtil;
 import com.coffeebland.util.FontUtil;
 
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
+
 /**
  * Created by kiasaki on 23/08/2014.
  */
@@ -25,7 +28,22 @@ public class MenuState extends State {
         font = FontUtil.normalFont(18);
         bigFont = FontUtil.normalFont(72);
 
-        getInputManager().listenTo(Control.LEFT_CLICK, new InputDispatcher.OnKeyListener() {
+        getInputManager().listenTo(Control.EXIT_MENU, new InputDispatcher.OnKeyListener() {
+            @Override
+            public void onKeyDown() {
+            }
+
+            @Override
+            public void onKeyUp() {
+                System.out.println("out");
+                Gdx.app.exit();
+            }
+
+            @Override
+            public void onKeyIsDown() {
+            }
+        });
+        getInputManager().listenTo(Control.ENTER, new InputDispatcher.OnKeyListener() {
             @Override
             public void onKeyDown() {
             }
@@ -33,11 +51,29 @@ public class MenuState extends State {
             @Override
             public void onKeyUp() {
                 switchingState = true;
-                switchToState(IntroState.class, Color.WHITE.cpy(), TRANSITION_MEDIUM);
+                switchToState(CharacterSelectionState.class, Color.BLACK.cpy(), TRANSITION_MEDIUM);
             }
 
             @Override
             public void onKeyIsDown() {
+            }
+        });
+        getInputManager().listenTo(Control.LEFT_CLICK, new InputDispatcher.OnMouseListener() {
+            @Override
+            public void onMouseDown(int x, int y) {
+            }
+
+            @Override
+            public void onMouseUp(int x, int y) {
+                Rectangle2D.Float bounds = ButtonUtil.getButtonBoundsCentered(font, "New game", Gdx.graphics.getHeight()-400);
+                if (bounds.contains(x, y)) {
+                    switchingState = true;
+                    switchToState(CharacterSelectionState.class, Color.BLACK.cpy(), TRANSITION_MEDIUM);
+                }
+            }
+
+            @Override
+            public void onMouseIsDown(int x, int y) {
             }
         });
     }
