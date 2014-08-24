@@ -92,6 +92,11 @@ public class Pedestrian implements Updateable, CameraRenderable {
         cell.setFrameY(frameY);
     }
 
+    public void setAnimationY(int y) {
+        skin.setFrameY(y);
+        clothes.setFrameY(y);
+        hair.setFrameY(y);
+    }
 
     public void runLeft() {
         isWalking = true;
