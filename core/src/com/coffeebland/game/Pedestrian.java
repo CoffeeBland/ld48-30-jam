@@ -13,7 +13,7 @@ public class Pedestrian implements Updateable, CameraRenderable {
     public static final int
             FRAME_WIDTH = 32,
             FRAME_HEIGHT = 64,
-            FEET_DECAL = 4,
+            FEET_DECAL = -4,
             FRAME_DECAL_X = -FRAME_WIDTH / 2,
             FRAME_STAND = 0,
             FRAME_RUN = 1,

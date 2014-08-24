@@ -1,9 +1,12 @@
 package com.coffeebland.res;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.coffeebland.HotSpot;
+import com.coffeebland.util.Maybe;
 import com.coffeebland.util.Updateable;
 
 /**
@@ -22,7 +25,15 @@ public class ImageSheet implements Updateable {
     int framesX, frameWidth, framesY, frameHeight;
     float scale = 1;
     Texture texture;
+    Maybe<Pixmap> pixmap = new Maybe<Pixmap>();
     boolean useScaling;
+
+    public void initPixmap(String ref) {
+        if (pixmap.hasValue()) {
+            return;
+        }
+        pixmap = new Maybe<Pixmap>(new Pixmap(new FileHandle(ref)));
+    }
 
     public int getFrameWidth() {
         return frameWidth;
@@ -60,6 +71,17 @@ public class ImageSheet implements Updateable {
         batch.setColor(tint);
         render(batch, x, y, imageX, imageY, flip);
         batch.setColor(Color.WHITE);
+    }
+    public void render(Pixmap target, float x, float y, int imageX, int imageY) {
+        if (!pixmap.hasValue())
+            return;
+
+        target.drawPixmap(pixmap.getValue(),
+                imageX * getFrameWidth(), imageY * getFrameHeight(),
+                getFrameWidth(), getFrameHeight(),
+                (int)x, (int)y,
+                getFrameWidth(), getFrameHeight()
+        );
     }
 
     public void update(float delta) {}

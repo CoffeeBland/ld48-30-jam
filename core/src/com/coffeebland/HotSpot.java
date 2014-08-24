@@ -52,6 +52,6 @@ public class HotSpot extends ApplicationAdapter {
     }
 
     public void updateScaleRate(int width, int height) {
-        UPSCALE_RATE = Math.max(Math.min(width, height) / 240, 1);
+        UPSCALE_RATE = Math.max(Math.min(width, height) / 320, 1);
     }
 }

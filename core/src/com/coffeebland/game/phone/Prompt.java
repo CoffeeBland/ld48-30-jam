@@ -23,9 +23,9 @@ import com.coffeebland.util.Updateable;
 public class Prompt implements Renderable, Updateable {
     public static final int MARGIN = 32;
 
-    public Prompt(String title, State state) {
+    public Prompt(String title, OnPromptResultListener listener) {
         this.title = title;
-        this.state = state;
+        this.listener = listener;
 
         whitePixelText = ColorUtil.whitePixel();
         font = FontUtil.normalFont(18);
@@ -48,6 +48,7 @@ public class Prompt implements Renderable, Updateable {
             @Override
             public void onKeyDown() {
                 dismiss();
+                Prompt.this.listener.onResult(false);
             }
 
             @Override
@@ -59,13 +60,14 @@ public class Prompt implements Renderable, Updateable {
         clickMgr.addButton(btnYes = new ClickManager.OnClickListener(new Rectangle(0, 0, boundsYes.width, boundsYes.height)) {
             @Override
             public void onClick() {
-                Prompt.this.state.switchToState(LogoState.class, Color.BLACK, State.TRANSITION_LONG * 10);
+                Prompt.this.listener.onResult(true);
             }
         });
         clickMgr.addButton(btnNo = new ClickManager.OnClickListener(new Rectangle(0, 0, boundsNo.width, boundsNo.height)) {
             @Override
             public void onClick() {
                 dismiss();
+                Prompt.this.listener.onResult(false);
             }
         });
     }
@@ -81,7 +83,7 @@ public class Prompt implements Renderable, Updateable {
     private Color overlayColor = new Color(0, 0, 0, 0.5f);
     private boolean dismissed = false;
     private ClickManager.OnClickListener btnYes, btnNo;
-    private State state;
+    private OnPromptResultListener listener;
 
     private void dismiss() {
         Gdx.input.setInputProcessor(previousInputProcessor);
@@ -121,5 +123,9 @@ public class Prompt implements Renderable, Updateable {
     @Override
     public void update(float delta) {
         inputDispatcher.update(delta);
+    }
+
+    public static interface OnPromptResultListener {
+        public void onResult(boolean success);
     }
 }

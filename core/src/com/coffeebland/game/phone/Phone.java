@@ -14,6 +14,7 @@ import com.coffeebland.input.InputDispatcher;
 import com.coffeebland.res.ImageSheet;
 import com.coffeebland.res.Images;
 import com.coffeebland.state.State;
+import com.coffeebland.states.LogoState;
 import com.coffeebland.util.ColorUtil;
 import com.coffeebland.util.Maybe;
 import com.coffeebland.util.Renderable;
@@ -52,7 +53,15 @@ public class Phone implements Updateable, Renderable {
         clickManager.addButton(powerButtonClick = new ClickManager.OnClickListener(new Rectangle(0, 0, 32, 32))  {
             @Override
             public void onClick() {
-                currentPrompt = new Maybe<Prompt>(new Prompt("Go back to title?", state));
+                currentPrompt = new Maybe<Prompt>(new Prompt("Go back to title?", new Prompt.OnPromptResultListener() {
+                    @Override
+                    public void onResult(boolean success) {
+                        if (success) {
+                            state.switchToState(LogoState.class, Color.BLACK.cpy(), State.TRANSITION_LONG);
+
+                        }
+                    }
+                }));
             }
         });
 

@@ -26,14 +26,14 @@ public class StateManager implements Updateable, Renderable {
 
         //switchToState(initialState, Color.BLACK.cpy(), State.TRANSITION_LONG);
         GameState.GameStateInfo info = new GameState.GameStateInfo();
-        info.street = new Street();
+        info.street = new Street(0, 0, Street.TILE_SIZE * 32, true);
         info.player = new Pedestrian(
                 "sprites/character/char_male.png", new Color(0xE6B6F1FF),
                 "sprites/character/char_male_clothes1.png",
                 "sprites/character/char_hair_short.png", Color.WHITE,
                 0, 0
         );
-        info.position = 0;
+        info.position = info.street.getStart();
         switchToState(GameState.class, Color.BLACK.cpy(), State.TRANSITION_LONG, info);
     }
 

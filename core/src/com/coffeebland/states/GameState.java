@@ -107,6 +107,7 @@ public class GameState extends State<GameState.GameStateInfo> {
 
     @Override
     public void render(SpriteBatch batch) {
+        currentStreet.render(batch, camera);
         for (Pedestrian pedestrian : pedestrians) {
             pedestrian.render(batch, camera);
         }
@@ -121,7 +122,7 @@ public class GameState extends State<GameState.GameStateInfo> {
         this.player = new Maybe<Pedestrian>(info.player);
         pedestrians.add(info.player);
         info.player.setX(info.position);
-        info.player.setY((float) (Math.random() * (Street.PEDESTRIANS_START_DISTANCE - Street.PEDESTRIANS_END_DISTANCE) + Street.PEDESTRIANS_END_DISTANCE));
+        info.player.setY((float) (Math.random() * (Street.PEDESTRIANS_END_DISTANCE - Street.PEDESTRIANS_START_DISTANCE) + Street.PEDESTRIANS_START_DISTANCE));
         camera.setPosition(info.position);
         currentStreet = info.street;
 
