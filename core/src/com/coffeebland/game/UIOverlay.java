@@ -20,7 +20,7 @@ public class UIOverlay implements Renderable {
 
     }
 
-    private ImageSheet icos = new ImageSheet("sprites/ui_icons.png", ICO_SIZE, ICO_SIZE);
+    private ImageSheet icos = new ImageSheet("sprites/ui_icons.png", ICO_SIZE, ICO_SIZE, false);
 
     private int remainingWifi, remainingBattery;
 

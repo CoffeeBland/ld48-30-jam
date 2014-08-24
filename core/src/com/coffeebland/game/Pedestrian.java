@@ -11,19 +11,22 @@ import com.coffeebland.util.Updateable;
  */
 public class Pedestrian implements Updateable, CameraRenderable {
     public static final int
-            FRAME_WIDTH = 64,
-            FRAME_HEIGHT = 80,
+            FRAME_WIDTH = 32,
+            FRAME_HEIGHT = 64,
             FEET_DECAL = 4,
             FRAME_DECAL_X = -FRAME_WIDTH / 2,
-            FRAME_STAND = 1,
-            FRAME_WALK = 2,
-            FRAME_RUN = 3;
+            FRAME_STAND = 0,
+            FRAME_RUN = 1,
+            FRAME_RUN_CELL = 2,
+            FRAME_WALK = 3,
+            FRAME_WALK_CELL = 4,
+            CYCLE_FRAMERATE = 20;
 
     public static final float
             RUN_BREAKPOINT = 4f,
             SLOW_RATE = 0.2f,
             SLOW_FACTOR = 1.03f,
-            SPEED_WALK = 0.25f,
+            SPEED_WALK = 0.15f,
             SPEED_RUN = 0.25f;
 
     public Pedestrian(String skinRef, Color skinColor, String clothesRef, String hairRef, Color hairColor, float x, float y) {
@@ -32,23 +35,29 @@ public class Pedestrian implements Updateable, CameraRenderable {
         setHair(hairRef, hairColor);
         this.x = x;
         this.y = y;
+
+        cell = new AnimatedImageSheet("sprites/character/cell.png", FRAME_WIDTH, FRAME_HEIGHT, CYCLE_FRAMERATE, true, true);
     }
 
-    private AnimatedImageSheet skin, clothes, hair;
+    private AnimatedImageSheet skin, clothes, hair, cell;
     private Color skinColor, hairColor;
     private float x, y, speed;
-    private boolean flip, isWalking;
+    private boolean flip, isWalking, holdCell = true;
 
     public void setSkin(String ref, Color skinColor) {
-        skin = new AnimatedImageSheet(ref, FRAME_WIDTH, FRAME_HEIGHT, 10, true);
+        skin = new AnimatedImageSheet(ref, FRAME_WIDTH, FRAME_HEIGHT, CYCLE_FRAMERATE, true, true);
         this.skinColor = skinColor;
     }
     public void setClothes(String ref) {
-        clothes = new AnimatedImageSheet(ref, FRAME_WIDTH, FRAME_HEIGHT, 10, true);
+        clothes = new AnimatedImageSheet(ref, FRAME_WIDTH, FRAME_HEIGHT, CYCLE_FRAMERATE, true, true);
     }
     public void setHair(String ref, Color hairColor) {
-        hair = new AnimatedImageSheet(ref, FRAME_WIDTH, FRAME_HEIGHT, 10, true);
+        hair = new AnimatedImageSheet(ref, FRAME_WIDTH, FRAME_HEIGHT, CYCLE_FRAMERATE, true, true);
         this.hairColor = hairColor;
+    }
+
+    public Color getSkinColor() {
+        return skinColor;
     }
 
     public float getX() {
@@ -67,6 +76,20 @@ public class Pedestrian implements Updateable, CameraRenderable {
     public void setFps(int fps) {
         skin.setFps(fps);
         clothes.setFps(fps);
+        hair.setFps(fps);
+        cell.setFps(fps);
+    }
+    public void setFrameX(int frameX) {
+        skin.setFrameX(frameX);
+        clothes.setFrameX(frameX);
+        hair.setFrameX(frameX);
+        cell.setFrameX(frameX);
+    }
+    public void setFrameY(int frameY) {
+        skin.setFrameY(frameY);
+        clothes.setFrameY(frameY);
+        hair.setFrameY(frameY);
+        cell.setFrameY(frameY);
     }
 
 
@@ -84,6 +107,7 @@ public class Pedestrian implements Updateable, CameraRenderable {
         skin.update(delta);
         clothes.update(delta);
         hair.update(delta);
+        cell.update(delta);
 
         speed /= SLOW_FACTOR;
         if (Math.abs(speed) < SLOW_RATE) {
@@ -93,12 +117,10 @@ public class Pedestrian implements Updateable, CameraRenderable {
                 if (!isWalking)
                     speed += SLOW_RATE;
                 flip = true;
-                System.out.println("LEFT");
             } else if (speed > 0) {
                 if (!isWalking)
                     speed -= SLOW_RATE;
                 flip = false;
-                System.out.println("RIGHT");
             }
         }
         isWalking = false;
@@ -106,17 +128,23 @@ public class Pedestrian implements Updateable, CameraRenderable {
         x += speed;
 
         if (Math.abs(speed) > RUN_BREAKPOINT) {
-            skin.setFrameY(FRAME_RUN);
-            clothes.setFrameY(FRAME_RUN);
-            hair.setFrameY(FRAME_RUN);
+            if (holdCell) {
+                setFrameY(FRAME_RUN_CELL);
+            } else {
+                setFrameY(FRAME_RUN);
+            }
+            setFps(CYCLE_FRAMERATE);
         } else if (speed != 0) {
-            skin.setFrameY(FRAME_WALK);
-            clothes.setFrameY(FRAME_WALK);
-            hair.setFrameY(FRAME_WALK);
+            if (holdCell) {
+                setFrameY(FRAME_WALK_CELL);
+            } else {
+                setFrameY(FRAME_WALK);
+            }
+            setFps(CYCLE_FRAMERATE);
         } else {
-            skin.setFrameY(FRAME_STAND);
-            clothes.setFrameY(FRAME_STAND);
-            hair.setFrameY(FRAME_STAND);
+            setFrameX(0);
+            setFrameY(FRAME_STAND);
+            setFps(0);
         }
     }
 
@@ -125,5 +153,6 @@ public class Pedestrian implements Updateable, CameraRenderable {
         skin.render(batch, x + FRAME_DECAL_X - camera.getPosition(), y + FEET_DECAL, flip, skinColor);
         clothes.render(batch, x + FRAME_DECAL_X - camera.getPosition(), y + FEET_DECAL, flip);
         hair.render(batch, x + FRAME_DECAL_X - camera.getPosition(), y + FEET_DECAL, flip, hairColor);
+        cell.render(batch, x + FRAME_DECAL_X - camera.getPosition(), y + FEET_DECAL, flip);
     }
 }

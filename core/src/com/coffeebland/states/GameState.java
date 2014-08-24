@@ -1,10 +1,12 @@
 package com.coffeebland.states;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.coffeebland.game.carto.Street;
 import com.coffeebland.game.Camera;
 import com.coffeebland.game.Pedestrian;
 import com.coffeebland.game.UIOverlay;
+import com.coffeebland.game.phone.Phone;
 import com.coffeebland.input.Control;
 import com.coffeebland.input.InputDispatcher;
 import com.coffeebland.state.State;
@@ -24,6 +26,8 @@ public class GameState extends State<GameState.GameStateInfo> {
     public GameState() {
         super();
 
+        phone = new Phone();
+
         getInputManager().listenTo(Control.MOVE_LEFT, new InputDispatcher.OnKeyListener() {
             @Override
             public void onKeyDown() {
@@ -32,11 +36,8 @@ public class GameState extends State<GameState.GameStateInfo> {
                     player.runLeft();
                 }
             }
-
             @Override
-            public void onKeyUp() {
-            }
-
+            public void onKeyUp() {}
             @Override
             public void onKeyIsDown() {
                 if (player.hasValue()) {
@@ -53,11 +54,8 @@ public class GameState extends State<GameState.GameStateInfo> {
                     player.runRight();
                 }
             }
-
             @Override
-            public void onKeyUp() {
-            }
-
+            public void onKeyUp() {}
             @Override
             public void onKeyIsDown() {
                 if (player.hasValue()) {
@@ -66,6 +64,20 @@ public class GameState extends State<GameState.GameStateInfo> {
                 }
             }
         });
+        getInputManager().listenTo(Control.OPEN_MENU, new InputDispatcher.OnKeyListener() {
+            @Override
+            public void onKeyDown() {
+                if (player.hasValue()) {
+                    phone.showPhone(player.getValue());
+                }
+            }
+            @Override
+            public void onKeyUp() {}
+            @Override
+            public void onKeyIsDown() {}
+        });
+
+        setBackgroundColor(new Color(0x544A40FF));
     }
 
     private Street currentStreet;
@@ -74,6 +86,7 @@ public class GameState extends State<GameState.GameStateInfo> {
     private Maybe<Pedestrian> player;
     private UIOverlay uiOverlay = new UIOverlay();
     private int remainingWIFI = MAX_WIFI, remainingBattery = MAX_BATTERY;
+    private Phone phone;
 
     @Override
     public boolean shouldBeReused() {
@@ -86,7 +99,10 @@ public class GameState extends State<GameState.GameStateInfo> {
             pedestrian.update(delta);
         }
         uiOverlay.update(3, 2);
-        camera.setPosition(0);
+        if (player.hasValue()) {
+            camera.setPosition(player.getValue().getX());
+        }
+        phone.update(delta);
     }
 
     @Override
@@ -95,6 +111,7 @@ public class GameState extends State<GameState.GameStateInfo> {
             pedestrian.render(batch, camera);
         }
         uiOverlay.render(batch);
+        phone.render(batch);
     }
 
     @Override

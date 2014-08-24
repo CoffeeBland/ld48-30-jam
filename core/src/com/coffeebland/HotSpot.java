@@ -11,6 +11,8 @@ import com.coffeebland.state.StateManager;
 import com.coffeebland.states.LogoState;
 
 public class HotSpot extends ApplicationAdapter {
+    public static int UPSCALE_RATE = 1;
+
 	SpriteBatch batch;
     long time;
     StateManager stateManager;
@@ -22,7 +24,8 @@ public class HotSpot extends ApplicationAdapter {
 		batch.enableBlending();
         time = System.nanoTime();
         stateManager = new StateManager(LogoState.class);
-	}
+	    updateScaleRate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    }
 
 	@Override
 	public void render () {
@@ -45,5 +48,10 @@ public class HotSpot extends ApplicationAdapter {
         batch = new SpriteBatch();
         batch.setBlendFunction(Gdx.gl.GL_SRC_ALPHA, Gdx.gl.GL_ONE_MINUS_SRC_ALPHA);
         batch.enableBlending();
+        updateScaleRate(width, height);
+    }
+
+    public void updateScaleRate(int width, int height) {
+        UPSCALE_RATE = Math.max(Math.min(width, height) / 240, 1);
     }
 }
