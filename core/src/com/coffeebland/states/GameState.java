@@ -68,7 +68,7 @@ public class GameState extends State<GameState.GameStateInfo> {
             @Override
             public void onKeyDown() {
                 if (player.hasValue()) {
-                    phone.showPhone(player.getValue());
+                    phone.showPhone(player.getValue(), GameState.this);
                 }
             }
             @Override

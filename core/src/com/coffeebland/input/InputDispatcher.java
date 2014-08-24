@@ -112,6 +112,9 @@ public class InputDispatcher implements InputProcessor {
     }
 
     public void update(float delta) {
+        if (this != Gdx.input.getInputProcessor())
+            return;
+
         Input input = Gdx.app.getInput();
         Collection<Map.Entry<Control, OnKeyListener>> keysToDown = new ArrayList<Map.Entry<Control, OnKeyListener>>();
 

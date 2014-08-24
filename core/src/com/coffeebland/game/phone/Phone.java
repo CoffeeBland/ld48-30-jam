@@ -13,6 +13,8 @@ import com.coffeebland.input.Control;
 import com.coffeebland.input.InputDispatcher;
 import com.coffeebland.res.ImageSheet;
 import com.coffeebland.res.Images;
+import com.coffeebland.state.State;
+import com.coffeebland.util.ColorUtil;
 import com.coffeebland.util.Maybe;
 import com.coffeebland.util.Renderable;
 import com.coffeebland.util.Updateable;
@@ -33,9 +35,7 @@ public class Phone implements Updateable, Renderable {
             TRANSITION_DURATION = 250;
 
     public Phone() {
-        whitePixel = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        whitePixel.drawPixel(0, 0, 0xFFFFFFFF);
-        whitePixelText = new Texture(whitePixel);
+        whitePixelText = ColorUtil.whitePixel();
 
         phoneCase = Images.get("sprites/phone/phone_case.png");
         hand = Images.get("sprites/phone/phone_hand.png");
@@ -52,7 +52,7 @@ public class Phone implements Updateable, Renderable {
         clickManager.addButton(powerButtonClick = new ClickManager.OnClickListener(new Rectangle(0, 0, 32, 32))  {
             @Override
             public void onClick() {
-
+                currentPrompt = new Maybe<Prompt>(new Prompt("Go back to title?", state));
             }
         });
 
@@ -72,7 +72,6 @@ public class Phone implements Updateable, Renderable {
 
     private Texture phoneCase, hand, whitePixelText;
     private ImageSheet homeButton, powerButton;
-    private Pixmap whitePixel;
     private boolean renderPhone;
     private float transition = 0, overlayOpacity = 0.5f, sincePowerButton = 0;
     private ClickManager.OnClickListener homeButtonClick, powerButtonClick;
@@ -82,6 +81,8 @@ public class Phone implements Updateable, Renderable {
     private ClickManager clickManager = new ClickManager(inputDispatcher);
     private Maybe<PhoneApp> currentApp = new Maybe<PhoneApp>();
     private PhoneApp homeApp = new AppHome();
+    private Maybe<Prompt> currentPrompt = new Maybe<Prompt>();
+    private State state;
 
     public boolean isShown() {
         return renderPhone;
@@ -89,6 +90,14 @@ public class Phone implements Updateable, Renderable {
 
     @Override
     public void update(float delta) {
+        if (currentPrompt.hasValue()) {
+            if (currentPrompt.getValue().dismissed()) {
+                currentPrompt = new Maybe<Prompt>();
+            } else {
+                currentPrompt.getValue().update(delta);
+            }
+        }
+
         if (renderPhone) {
             inputDispatcher.update(delta);
             if (currentApp.hasValue())
@@ -165,9 +174,12 @@ public class Phone implements Updateable, Renderable {
         batch.setColor(skinColor.cpy().mul(colorScale, colorScale, colorScale, 1));
         batch.draw(hand, handX, handY, hand.getWidth() * imageScale, hand.getHeight() * imageScale);
         batch.setColor(Color.WHITE);
+
+        if (currentPrompt.hasValue())
+            currentPrompt.getValue().render(batch);
     }
 
-    public void showPhone(Pedestrian player) {
+    public void showPhone(Pedestrian player, State state) {
         renderPhone = true;
         skinColor = player.getSkinColor();
         if (transition <= 0) {
@@ -179,6 +191,7 @@ public class Phone implements Updateable, Renderable {
 
         previousInputProcessor = Gdx.input.getInputProcessor();
         Gdx.input.setInputProcessor(inputDispatcher);
+        this.state = state;
     }
 
     public void hidePhone() {
