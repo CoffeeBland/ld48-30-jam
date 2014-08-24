@@ -26,7 +26,7 @@ public class IntroState extends State<IntroState.IntroStateInfo> {
     public void switchToGame() {
         GameState.GameStateInfo info = new GameState.GameStateInfo();
         info.player = character;
-        info.street = new Street(0, 0, Street.TILE_SIZE * 32, true);
+        info.street = new Street(0, 0, Street.TILE_SIZE * 32, true, 1337);
         info.position = info.street.getStart();
         switchToState(GameState.class, Color.WHITE.cpy(), TRANSITION_SHORT, info);
     }

@@ -166,8 +166,8 @@ public class CharacterSelectionState extends State {
 
             character.setHair(HAIRS[selectedHair].getA(), new Color(HAIRS[selectedHair].getB()));
         }
-        character.setFrameX(0);
         character.setFps(15);
+        character.setFrameX(0);
     }
 
     @Override
