@@ -50,7 +50,6 @@ public class MenuState extends State {
 
             @Override
             public void onKeyUp() {
-                switchingState = true;
                 switchToState(CharacterSelectionState.class, Color.BLACK.cpy(), TRANSITION_MEDIUM);
             }
 
@@ -67,7 +66,6 @@ public class MenuState extends State {
             public void onMouseUp(int x, int y) {
                 Rectangle2D.Float bounds = ButtonUtil.getButtonBoundsCentered(font, "New game", Gdx.graphics.getHeight()-400);
                 if (bounds.contains(x, y)) {
-                    switchingState = true;
                     switchToState(CharacterSelectionState.class, Color.BLACK.cpy(), TRANSITION_MEDIUM);
                 }
             }
@@ -81,7 +79,6 @@ public class MenuState extends State {
     private Texture bg;
     private BitmapFont font;
     private BitmapFont bigFont;
-    private boolean switchingState;
 
     @Override
     public void update(float delta) {
@@ -89,7 +86,6 @@ public class MenuState extends State {
 
     @Override
     public void render(SpriteBatch batch) {
-        //if (switchingState) return;
         int wWidth = Gdx.graphics.getWidth();
         int wHeight = Gdx.graphics.getHeight();
 
@@ -110,13 +106,4 @@ public class MenuState extends State {
     public boolean shouldBeReused() {
         return true;
     }
-
-    @Override
-    public void onTransitionInStart() {
-        switchingState = false;
-    }
-    @Override
-    public void onTransitionInFinish() {
-    }
-
 }

@@ -188,6 +188,10 @@ public class Phone implements Updateable, Renderable {
             currentPrompt.getValue().render(batch);
     }
 
+    public void setHandColor(Color newColor) {
+        skinColor = newColor;
+    }
+
     public void showPhone(Pedestrian player, State state) {
         renderPhone = true;
         skinColor = player.getSkinColor();

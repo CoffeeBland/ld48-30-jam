@@ -24,7 +24,8 @@ public class StateManager implements Updateable, Renderable {
         whitePixel.drawPixel(0, 0, 0xFFFFFFFF);
         whitePixelText = new Texture(whitePixel);
 
-        //switchToState(initialState, Color.BLACK.cpy(), State.TRANSITION_LONG);
+        switchToState(initialState, Color.BLACK.cpy(), State.TRANSITION_LONG);
+        /*
         GameState.GameStateInfo info = new GameState.GameStateInfo();
         info.map = com.coffeebland.game.carto.Map.getMap();
         info.street = info.map.getStreets().get((int)(Math.random() * 50));
@@ -36,6 +37,7 @@ public class StateManager implements Updateable, Renderable {
         );
         info.position = info.street.getStart();
         switchToState(GameState.class, Color.BLACK.cpy(), State.TRANSITION_LONG, info);
+        */
     }
 
     private Map<String, State> states = new HashMap<String, State>();
