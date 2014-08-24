@@ -5,6 +5,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.coffeebland.carto.Street;
+import com.coffeebland.game.Pedestrian;
+import com.coffeebland.states.GameState;
 import com.coffeebland.util.Maybe;
 import com.coffeebland.util.Renderable;
 import com.coffeebland.util.Updateable;
@@ -22,6 +25,11 @@ public class StateManager implements Updateable, Renderable {
         whitePixelText = new Texture(whitePixel);
 
         switchToState(initialState, Color.BLACK.cpy(), State.TRANSITION_LONG);
+        /*GameState.GameStateInfo info = new GameState.GameStateInfo();
+        info.street = new Street();
+        info.player = new Pedestrian("CharacterWalk.png", Color.WHITE, "CharacterWalk.png", "CharacterWalk.png", Color.WHITE, 0, 0);
+        info.position = 128;
+        switchToState(GameState.class, Color.BLACK.cpy(), State.TRANSITION_LONG, info);*/
     }
 
     private Map<String, State> states = new HashMap<String, State>();

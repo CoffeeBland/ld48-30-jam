@@ -98,13 +98,14 @@ public class GameState extends State<GameState.GameStateInfo> {
 
     @Override
     public void onTransitionInStart(GameStateInfo info) {
+        pedestrians = new HashSet<Pedestrian>();
+
         this.player = new Maybe<Pedestrian>(info.player);
         pedestrians.add(info.player);
         info.player.setX(info.position);
         info.player.setY((float)(Math.random() * (Street.PEDESTRIANS_START_DISTANCE - Street.PEDESTRIANS_END_DISTANCE) + Street.PEDESTRIANS_END_DISTANCE));
         camera.setPosition(info.position);
         currentStreet = info.street;
-        pedestrians = new HashSet<Pedestrian>();
 
         remainingBattery = MAX_BATTERY;
         remainingWIFI = MAX_WIFI;

@@ -112,10 +112,20 @@ public class InputDispatcher implements InputProcessor {
     }
 
     public void listenTo(Control control, OnKeyListener listener) {
-
+        keyListeners.put(control, listener);
+    }
+    public void listenTo(Control[] controls, OnKeyListener listener) {
+        for (Control control: controls) {
+            listenTo(controls, listener);
+        }
     }
     public void listenTo(Control control, OnMouseListener listener) {
-
+        mouseListeners.put(control, listener);
+    }
+    public void listenTo(Control[] controls, OnMouseListener listener) {
+        for (Control control: controls) {
+            listenTo(controls, listener);
+        }
     }
 
     public static interface OnKeyListener {

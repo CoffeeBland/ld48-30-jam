@@ -22,7 +22,9 @@ public enum Control {
         prefs = Gdx.app.getPreferences("Controls");
 
         for (Control control : Control.values()) {
-            control.setKeyCode(prefs.getInteger(control.name()));
+            int keyCode = prefs.getInteger(control.name(), Integer.MIN_VALUE);
+            if (keyCode != Integer.MIN_VALUE)
+                control.setKeyCode(keyCode);
         }
     }
 

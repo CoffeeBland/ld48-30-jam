@@ -20,7 +20,7 @@ public class UIOverlay implements Renderable {
 
     }
 
-    private ImageSheet icos = new ImageSheet("ui_icons", ICO_SIZE, ICO_SIZE);
+    private ImageSheet icos = new ImageSheet("ui_icons.png", ICO_SIZE, ICO_SIZE);
 
     private int remainingWifi, remainingBattery;
 
@@ -29,10 +29,10 @@ public class UIOverlay implements Renderable {
         int left = Gdx.graphics.getWidth() - ICO_SIZE;
         int top = Gdx.graphics.getHeight() - ICO_SIZE;
         icos.render(batch, left, top, GameState.MAX_BATTERY - remainingBattery, FRAME_BATTERY, false);
-        top -= ICO_SIZE;
-        icos.render(batch, left, top, GameState.MAX_WIFI - remainingWifi, FRAME_WIFI, false);
-        top -= ICO_SIZE;
+        left -= ICO_SIZE;
         icos.render(batch, left, top, 0, FRAME_3G, false);
+        left -= ICO_SIZE;
+        icos.render(batch, left, top, GameState.MAX_WIFI - remainingWifi, FRAME_WIFI, false);
     }
 
     public void update(int remainingWifi, int remainingBattery) {

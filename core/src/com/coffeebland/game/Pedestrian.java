@@ -11,8 +11,8 @@ import com.coffeebland.util.Updateable;
  */
 public class Pedestrian implements Updateable, CameraRenderable {
     public static final int
-            FRAME_WIDTH = 32,
-            FRAME_HEIGHT = 64,
+            FRAME_WIDTH = 64,
+            FRAME_HEIGHT = 80,
             FEET_DECAL = 4,
             FRAME_DECAL_X = -FRAME_WIDTH / 2,
             FRAME_STAND = 0,
@@ -40,14 +40,14 @@ public class Pedestrian implements Updateable, CameraRenderable {
     private boolean flip, isWalking;
 
     public void setSkin(String ref, Color skinColor) {
-        skin = new AnimatedImageSheet(ref, FRAME_WIDTH, FRAME_HEIGHT, 12, true);
+        skin = new AnimatedImageSheet(ref, FRAME_WIDTH, FRAME_HEIGHT, 10, true);
         this.skinColor = skinColor;
     }
     public void setClothes(String ref) {
-        clothes = new AnimatedImageSheet(ref, FRAME_WIDTH, FRAME_HEIGHT, 12, true);
+        clothes = new AnimatedImageSheet(ref, FRAME_WIDTH, FRAME_HEIGHT, 10, true);
     }
     public void setHair(String ref, Color hairColor) {
-        hair = new AnimatedImageSheet(ref, FRAME_WIDTH, FRAME_HEIGHT, 12, true);
+        hair = new AnimatedImageSheet(ref, FRAME_WIDTH, FRAME_HEIGHT, 10, true);
         this.hairColor = hairColor;
     }
 
@@ -122,7 +122,7 @@ public class Pedestrian implements Updateable, CameraRenderable {
     public void render(SpriteBatch batch, Camera camera) {
 
         skin.render(batch, x + FRAME_DECAL_X - camera.getPosition(), y + FEET_DECAL, flip, skinColor);
-        clothes.render(batch, x + FRAME_DECAL_X, y + FEET_DECAL, flip);
-        hair.render(batch, x + FRAME_DECAL_X, y + FEET_DECAL, flip, hairColor);
+        clothes.render(batch, x + FRAME_DECAL_X - camera.getPosition(), y + FEET_DECAL, flip);
+        hair.render(batch, x + FRAME_DECAL_X - camera.getPosition(), y + FEET_DECAL, flip, hairColor);
     }
 }
