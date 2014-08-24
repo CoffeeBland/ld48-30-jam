@@ -5,9 +5,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.coffeebland.HotSpot;
 import com.coffeebland.game.Camera;
 import com.coffeebland.game.Pedestrian;
+import com.coffeebland.input.ClickManager;
 import com.coffeebland.input.Control;
 import com.coffeebland.input.InputDispatcher;
 import com.coffeebland.state.State;
@@ -68,7 +70,6 @@ public class CharacterSelectionState extends State {
             @Override
             public void onKeyUp() {
                 if (selectedButton == CTL_PLAY) {
-                    switchingState = true;
                     IntroState.IntroStateInfo info = new IntroState.IntroStateInfo(character);
                     switchToState(IntroState.class, Color.BLACK.cpy(), TRANSITION_MEDIUM, info);
                 }
@@ -136,6 +137,58 @@ public class CharacterSelectionState extends State {
             public void onKeyIsDown() {
             }
         });
+
+        clickManager = new ClickManager(getInputManager());
+        clickManager.addButton(new ClickManager.OnClickListener(arrowHairLeft = new Rectangle(0, 0, arrow.getWidth(), arrow.getHeight())) {
+            @Override
+            public void onClick() {
+                selectedButton = 0;
+                change(-1);
+            }
+        });
+        clickManager.addButton(new ClickManager.OnClickListener(arrowHairRight = new Rectangle(0, 0, arrow.getWidth(), arrow.getHeight())) {
+            @Override
+            public void onClick() {
+                selectedButton = 0;
+                change(1);
+            }
+        });
+        clickManager.addButton(new ClickManager.OnClickListener(arrowClothesLeft = new Rectangle(0, 0, arrow.getWidth(), arrow.getHeight())) {
+            @Override
+            public void onClick() {
+                selectedButton = 1;
+                change(-1);
+            }
+        });
+        clickManager.addButton(new ClickManager.OnClickListener(arrowClothesRight = new Rectangle(0, 0, arrow.getWidth(), arrow.getHeight())) {
+            @Override
+            public void onClick() {
+                selectedButton = 1;
+                change(1);
+            }
+        });
+        clickManager.addButton(new ClickManager.OnClickListener(arrowSkinLeft = new Rectangle(0, 0, arrow.getWidth(), arrow.getHeight())) {
+            @Override
+            public void onClick() {
+                selectedButton = 2;
+                change(-1);
+            }
+        });
+        clickManager.addButton(new ClickManager.OnClickListener(arrowSkinRight = new Rectangle(0, 0, arrow.getWidth(), arrow.getHeight())) {
+            @Override
+            public void onClick() {
+                selectedButton = 2;
+                change(1);
+            }
+        });
+        clickManager.addButton(new ClickManager.OnClickListener(start = new Rectangle(0, 0, 24, 24)) {
+            @Override
+            public void onClick() {
+                selectedButton = 3;
+                IntroState.IntroStateInfo info = new IntroState.IntroStateInfo(character);
+                switchToState(IntroState.class, Color.BLACK.cpy(), TRANSITION_MEDIUM, info);
+            }
+        });
     }
 
     private Texture bg;
@@ -144,10 +197,11 @@ public class CharacterSelectionState extends State {
     private Camera camera;
     private Pedestrian character;
     private float timeIn;
-    private boolean switchingState = false;
     private int selectedButton;
     private int selectedSkin;
     private int selectedHair;
+    private ClickManager clickManager;
+    private Rectangle arrowHairLeft, arrowHairRight, arrowClothesLeft, arrowClothesRight, arrowSkinLeft, arrowSkinRight, start;
 
     @Override
     public boolean shouldBeReused() { return false; }
@@ -211,12 +265,35 @@ public class CharacterSelectionState extends State {
         // Change arrows
         batch.setColor(Color.WHITE.cpy());
         float textHeight = font.getBounds(text).height;
-        batch.draw(arrow, (wWidth / 2) - 180, wHeight-330-textHeight-12, 32f, 32f, 0, 0, 32, 32, false, false);
-        batch.draw(arrow, (wWidth / 2) + 148, wHeight-330-textHeight-12, 32f, 32f, 0, 0, 32, 32, true, false);
-        batch.draw(arrow, (wWidth / 2) - 180, wHeight-430-textHeight-12, 32f, 32f, 0, 0, 32, 32, false, false);
-        batch.draw(arrow, (wWidth / 2) + 148, wHeight-430-textHeight-12, 32f, 32f, 0, 0, 32, 32, true, false);
-        batch.draw(arrow, (wWidth / 2) - 180, wHeight-530-textHeight-12, 32f, 32f, 0, 0, 32, 32, false, false);
-        batch.draw(arrow, (wWidth / 2) + 148, wHeight-530-textHeight-12, 32f, 32f, 0, 0, 32, 32, true, false);
+        float aW = arrow.getWidth(), aH = arrow.getHeight();
+        float x = (wWidth / 2) - 180,
+                x2 = (wWidth / 2) + 148,
+                y = wHeight-330-textHeight-12;
+        arrowHairLeft.x = x;
+        arrowHairLeft.y = y;
+        batch.draw(arrow, x, y, aW, aH, 0, 0, (int)aW, (int)aH, false, false);
+
+        arrowHairRight.x = x2;
+        arrowHairRight.y = y;
+        batch.draw(arrow, x2, y, aW, aH, 0, 0, (int)aW, (int)aH, true, false);
+
+        y = wHeight-430-textHeight-12;
+        arrowClothesLeft.x = x;
+        arrowClothesLeft.y = y;
+        batch.draw(arrow, x, y, aW, aH, 0, 0, (int)aW, (int)aH, false, false);
+
+        arrowClothesRight.x = x2;
+        arrowClothesRight.y = y;
+        batch.draw(arrow, x2, y, aW, aH, 0, 0, (int)aW, (int)aH, true, false);
+
+        y = wHeight-530-textHeight-12;
+        arrowSkinLeft.x = x;
+        arrowSkinLeft.y = y;
+        batch.draw(arrow, x, y, aW, aH, 0, 0, (int)aW, (int)aH, false, false);
+
+        arrowSkinRight.x = x2;
+        arrowSkinRight.y = y;
+        batch.draw(arrow, x2, y, aW, aH, 0, 0, (int)aW, (int)aH, true, false);
 
         // Highlight current CTL
         if (selectedButton != CTL_PLAY) {
@@ -228,10 +305,20 @@ public class CharacterSelectionState extends State {
         text = "Play! Play the game!";
         halfTextWidth = font.getBounds(text).width / 2;
         batch.setColor(selectedButton == CTL_PLAY ? Color.BLACK.cpy() : Color.WHITE.cpy());
+        float btnPlayX = (wWidth / 2) - halfTextWidth - 12,
+                btnPlayY = (wHeight - 630 - 12 - font.getBounds(text).height),
+                btnPlayW = (halfTextWidth * 2) + 24,
+                btnPlayH = font.getBounds(text).height + 24;
+        start.x = btnPlayX;
+        start.y = btnPlayY;
+        start.width = btnPlayW;
+        start.height = btnPlayH;
         batch.draw(bg,
-                (wWidth / 2) - halfTextWidth - 12,
-                (wHeight - 630 - 12 - font.getBounds(text).height),
-                (halfTextWidth * 2) + 24, font.getBounds(text).height + 24);
+                btnPlayX,
+                btnPlayY,
+                btnPlayW,
+                btnPlayH
+        );
         font.setColor(selectedButton == CTL_PLAY ? Color.WHITE.cpy() : Color.BLACK.cpy());
         font.draw(batch, text, (wWidth / 2) - halfTextWidth, wHeight-630);
 
@@ -251,8 +338,4 @@ public class CharacterSelectionState extends State {
 
         character.updateAnims(delta);
     }
-
-    @Override
-    public void onTransitionInStart() { switchingState = false; }
-
 }

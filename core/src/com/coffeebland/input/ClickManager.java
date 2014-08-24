@@ -12,39 +12,39 @@ public class ClickManager {
         dispatcher.listenTo(Control.LEFT_CLICK, new InputDispatcher.OnMouseListener() {
             @Override
             public void onMouseDown(int x, int y) {
-                for (Map.Entry<Rectangle, OnClickListener> entry : buttons.entrySet()) {
-                    entry.getValue().buttonStatus = entry.getKey().contains(x, y);
+                for (OnClickListener entry : buttons) {
+                    entry.buttonStatus = entry.region.contains(x, y);
                 }
             }
 
             @Override
             public void onMouseUp(int x, int y) {
-                List<Map.Entry<Rectangle, OnClickListener>> entries = new ArrayList<Map.Entry<Rectangle, OnClickListener>>();
-                for (Map.Entry<Rectangle, OnClickListener> entry : buttons.entrySet()) {
-                    entry.getValue().buttonStatus = false;
-                    if (entry.getKey().contains(x, y)) {
-                        entries.add(entry);
+                List<OnClickListener> entries = new ArrayList< OnClickListener>();
+                for (OnClickListener listener : buttons) {
+                    listener.buttonStatus = false;
+                    if (listener.region.contains(x, y)) {
+                        entries.add(listener);
                     }
                 }
 
-                for (Map.Entry<Rectangle, OnClickListener> entry : entries) {
-                    entry.getValue().onClick();
+                for (OnClickListener entry : entries) {
+                    entry.onClick();
                 }
             }
 
             @Override
             public void onMouseIsDown(int x, int y) {
-                for (Map.Entry<Rectangle, OnClickListener> entry : buttons.entrySet()) {
-                    entry.getValue().buttonStatus = entry.getKey().contains(x, y);
+                for (OnClickListener listener : buttons) {
+                    listener.buttonStatus = listener.region.contains(x, y);
                 }
             }
         });
     }
 
-    private Map<Rectangle, OnClickListener> buttons = new HashMap<Rectangle, OnClickListener>();
+    private Set<OnClickListener> buttons = new HashSet<OnClickListener>();
 
     public void addButton(OnClickListener button) {
-        buttons.put(button.region, button);
+        buttons.add(button);
     }
     public void removeButton(OnClickListener button) {
         buttons.remove(button.region);
