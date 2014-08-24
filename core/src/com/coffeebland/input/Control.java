@@ -5,6 +5,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
 import com.coffeebland.util.Maybe;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 
 /**
  * Created by dagothig on 8/23/14.
@@ -36,13 +40,14 @@ public enum Control {
         prefs.flush();
     }
 
-    public static Maybe<Control> getControl(int keycode) {
+    public static Collection<Control> getControls(int keycode) {
+        Set<Control> controls = new HashSet<Control>();
         for (Control control : Control.values()) {
             if (control.getKeyCode() == keycode) {
-                return new Maybe<Control>(control);
+                controls.add(control);
             }
         }
-        return new Maybe<Control>();
+        return controls;
     }
 
     private Control(int keyCode) {

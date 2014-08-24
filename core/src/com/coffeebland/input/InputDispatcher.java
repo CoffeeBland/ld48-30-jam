@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.coffeebland.util.Maybe;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,32 +18,32 @@ public class InputDispatcher implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        Maybe<Control> maybe = Control.getControl(keycode);
-        if (!maybe.hasValue())
-            return false;
+        Collection<Control> controls = Control.getControls(keycode);
 
-        Control control = maybe.getValue();
-        if (keyListeners.containsKey(control)) {
-            keyListeners.get(control).onKeyDown();
-            return true;
+        boolean returnValue = false;
+        for (Control control: controls) {
+            if (keyListeners.containsKey(control)) {
+                keyListeners.get(control).onKeyDown();
+                returnValue = true;
+            }
         }
 
-        return false;
+        return returnValue;
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        Maybe<Control> maybe = Control.getControl(keycode);
-        if (!maybe.hasValue())
-            return false;
+        Collection<Control> controls = Control.getControls(keycode);
 
-        Control control = maybe.getValue();
-        if (keyListeners.containsKey(control)) {
-            keyListeners.get(control).onKeyUp();
-            return true;
+        boolean returnValue = false;
+        for (Control control: controls) {
+            if (keyListeners.containsKey(control)) {
+                keyListeners.get(control).onKeyUp();
+                returnValue = true;
+            }
         }
 
-        return false;
+        return returnValue;
     }
 
     @Override
@@ -52,32 +53,32 @@ public class InputDispatcher implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Maybe<Control> maybe = Control.getControl(button);
-        if (!maybe.hasValue())
-            return false;
+        Collection<Control> controls = Control.getControls(button);
 
-        Control control = maybe.getValue();
-        if (mouseListeners.containsKey(control)) {
-            mouseListeners.get(control).onMouseDown(screenX, screenY);
-            return true;
+        boolean returnValue = false;
+        for (Control control: controls) {
+            if (mouseListeners.containsKey(control)) {
+                mouseListeners.get(control).onMouseDown(screenX, screenY);
+                returnValue = true;
+            }
         }
 
-        return false;
+        return returnValue;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        Maybe<Control> maybe = Control.getControl(button);
-        if (!maybe.hasValue())
-            return false;
+        Collection<Control> controls = Control.getControls(button);
 
-        Control control = maybe.getValue();
-        if (mouseListeners.containsKey(control)) {
-            mouseListeners.get(control).onMouseUp(screenX, screenY);
-            return true;
+        boolean returnValue = false;
+        for (Control control: controls) {
+            if (mouseListeners.containsKey(control)) {
+                mouseListeners.get(control).onMouseUp(screenX, screenY);
+                returnValue = true;
+            }
         }
 
-        return false;
+        return returnValue;
     }
 
     @Override

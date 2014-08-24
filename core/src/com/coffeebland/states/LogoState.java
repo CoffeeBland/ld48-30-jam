@@ -14,7 +14,7 @@ import com.coffeebland.util.FontUtil;
  * Created by kiasaki on 23/08/2014.
  */
 public class LogoState extends State {
-    public static String LOGO_PATH = "coffeebland.png";
+    public static String LOGO_PATH = "sprites/coffeebland.png";
 
     public LogoState() {
         setBackgroundColor(Color.WHITE.cpy());
