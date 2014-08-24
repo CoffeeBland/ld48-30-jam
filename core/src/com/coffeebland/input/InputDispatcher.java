@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.coffeebland.util.Maybe;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,14 +54,21 @@ public class InputDispatcher implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        int y = Gdx.graphics.getHeight() - screenY;
         Collection<Control> controls = Control.getControls(button);
 
         boolean returnValue = false;
+        Collection<Control> controlsToDown = new ArrayList<Control>();
+
         for (Control control: controls) {
             if (mouseListeners.containsKey(control)) {
-                mouseListeners.get(control).onMouseDown(screenX, screenY);
-                returnValue = true;
+                controlsToDown.add(control);
             }
+        }
+
+        for (Control control : controlsToDown) {
+            mouseListeners.get(control).onMouseDown(screenX, y);
+            returnValue = true;
         }
 
         return returnValue;
@@ -68,14 +76,21 @@ public class InputDispatcher implements InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        int y = Gdx.graphics.getHeight() - screenY;
         Collection<Control> controls = Control.getControls(button);
 
         boolean returnValue = false;
+        Collection<Control> controlsToUp = new ArrayList<Control>();
+
         for (Control control: controls) {
             if (mouseListeners.containsKey(control)) {
-                mouseListeners.get(control).onMouseUp(screenX, screenY);
-                returnValue = true;
+                controlsToUp.add(control);
             }
+        }
+
+        for (Control control : controlsToUp) {
+            mouseListeners.get(control).onMouseUp(screenX, y);
+            returnValue = true;
         }
 
         return returnValue;
@@ -98,17 +113,28 @@ public class InputDispatcher implements InputProcessor {
 
     public void update(float delta) {
         Input input = Gdx.app.getInput();
+        Collection<Map.Entry<Control, OnKeyListener>> keysToDown = new ArrayList<Map.Entry<Control, OnKeyListener>>();
+
         for (Map.Entry<Control, OnKeyListener> entry : keyListeners.entrySet()) {
             if (input.isKeyPressed(entry.getKey().getKeyCode())) {
-                entry.getValue().onKeyIsDown();
+                keysToDown.add(entry);
             }
         }
 
+        for (Map.Entry<Control, OnKeyListener> entry : keysToDown) {
+            entry.getValue().onKeyIsDown();
+        }
+
+        Collection<Map.Entry<Control, OnMouseListener>> mouseToDown = new ArrayList<Map.Entry<Control, OnMouseListener>>();
         for (Map.Entry<Control, OnMouseListener> entry : mouseListeners.entrySet()) {
-            int x = input.getX(), y = input.getY();
             if (input.isButtonPressed(entry.getKey().getKeyCode())) {
-                entry.getValue().onMouseIsDown(x, y);
+                mouseToDown.add(entry);
             }
+        }
+
+        int x = input.getX(), y = Gdx.graphics.getHeight() - input.getY();
+        for (Map.Entry<Control, OnMouseListener> entry : mouseToDown) {
+            entry.getValue().onMouseIsDown(x, y);
         }
     }
 
