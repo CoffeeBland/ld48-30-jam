@@ -14,7 +14,8 @@ public enum Control {
     MOVE_RIGHT(Input.Keys.RIGHT),
     RAISE_CELLPHONE(Input.Keys.SPACE),
     ENTER(Input.Keys.ENTER),
-    OPEN_MENU(Input.Keys.ESCAPE);
+    OPEN_MENU(Input.Keys.ESCAPE),
+    LEFT_CLICK(Input.Buttons.LEFT);
 
     private static Preferences prefs;
 

@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.coffeebland.input.Control;
+import com.coffeebland.input.InputDispatcher;
 import com.coffeebland.state.State;
 import com.coffeebland.util.ButtonUtil;
 import com.coffeebland.util.ColorUtil;
@@ -16,15 +18,34 @@ import com.coffeebland.util.FontUtil;
  */
 public class MenuState extends State {
     public MenuState() {
+        super();
+
         setBackgroundColor(Color.WHITE.cpy());
         bg = ColorUtil.whitePixel();
         font = FontUtil.normalFont(18);
         bigFont = FontUtil.normalFont(72);
+
+        getInputManager().listenTo(Control.LEFT_CLICK, new InputDispatcher.OnKeyListener() {
+            @Override
+            public void onKeyDown() {
+            }
+
+            @Override
+            public void onKeyUp() {
+                switchingState = true;
+                switchToState(IntroState.class, Color.WHITE.cpy(), TRANSITION_MEDIUM);
+            }
+
+            @Override
+            public void onKeyIsDown() {
+            }
+        });
     }
 
     private Texture bg;
     private BitmapFont font;
     private BitmapFont bigFont;
+    private boolean switchingState;
 
     @Override
     public void update(float delta) {
@@ -32,6 +53,7 @@ public class MenuState extends State {
 
     @Override
     public void render(SpriteBatch batch) {
+        //if (switchingState) return;
         int wWidth = Gdx.graphics.getWidth();
         int wHeight = Gdx.graphics.getHeight();
 
@@ -55,6 +77,7 @@ public class MenuState extends State {
 
     @Override
     public void onTransitionInStart() {
+        switchingState = false;
     }
     @Override
     public void onTransitionInFinish() {
