@@ -1,4 +1,4 @@
-package com.coffeebland.carto;
+package com.coffeebland.game.carto;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.coffeebland.game.Camera;

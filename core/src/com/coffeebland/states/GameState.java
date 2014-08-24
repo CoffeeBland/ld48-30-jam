@@ -1,7 +1,7 @@
 package com.coffeebland.states;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.coffeebland.carto.Street;
+import com.coffeebland.game.carto.Street;
 import com.coffeebland.game.Camera;
 import com.coffeebland.game.Pedestrian;
 import com.coffeebland.game.UIOverlay;
@@ -86,6 +86,7 @@ public class GameState extends State<GameState.GameStateInfo> {
             pedestrian.update(delta);
         }
         uiOverlay.update(3, 2);
+        camera.setPosition(0);
     }
 
     @Override
@@ -103,7 +104,7 @@ public class GameState extends State<GameState.GameStateInfo> {
         this.player = new Maybe<Pedestrian>(info.player);
         pedestrians.add(info.player);
         info.player.setX(info.position);
-        info.player.setY((float)(Math.random() * (Street.PEDESTRIANS_START_DISTANCE - Street.PEDESTRIANS_END_DISTANCE) + Street.PEDESTRIANS_END_DISTANCE));
+        info.player.setY((float) (Math.random() * (Street.PEDESTRIANS_START_DISTANCE - Street.PEDESTRIANS_END_DISTANCE) + Street.PEDESTRIANS_END_DISTANCE));
         camera.setPosition(info.position);
         currentStreet = info.street;
 

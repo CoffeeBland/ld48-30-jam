@@ -28,6 +28,7 @@ public class UIOverlay implements Renderable {
     public void render(SpriteBatch batch) {
         int left = Gdx.graphics.getWidth() - ICO_SIZE;
         int top = Gdx.graphics.getHeight() - ICO_SIZE;
+        
         icos.render(batch, left, top, GameState.MAX_BATTERY - remainingBattery, FRAME_BATTERY, false);
         left -= ICO_SIZE;
         icos.render(batch, left, top, 0, FRAME_3G, false);

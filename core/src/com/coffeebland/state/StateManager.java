@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.coffeebland.carto.Street;
+import com.coffeebland.game.carto.Street;
 import com.coffeebland.game.Pedestrian;
 import com.coffeebland.states.GameState;
 import com.coffeebland.util.Maybe;

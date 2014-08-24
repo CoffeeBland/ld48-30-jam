@@ -37,4 +37,13 @@ public class HotSpot extends ApplicationAdapter {
         stateManager.render(batch);
         batch.end();
     }
+
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+
+        batch = new SpriteBatch();
+        batch.setBlendFunction(Gdx.gl.GL_SRC_ALPHA, Gdx.gl.GL_ONE_MINUS_SRC_ALPHA);
+        batch.enableBlending();
+    }
 }

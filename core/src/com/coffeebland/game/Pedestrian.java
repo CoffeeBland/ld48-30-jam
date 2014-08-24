@@ -15,16 +15,16 @@ public class Pedestrian implements Updateable, CameraRenderable {
             FRAME_HEIGHT = 80,
             FEET_DECAL = 4,
             FRAME_DECAL_X = -FRAME_WIDTH / 2,
-            FRAME_STAND = 0,
-            FRAME_WALK = 1,
-            FRAME_RUN = 2;
+            FRAME_STAND = 1,
+            FRAME_WALK = 2,
+            FRAME_RUN = 3;
 
     public static final float
-            RUN_BREAKPOINT = 1,
-            SLOW_RATE = 0.1f,
-            SLOW_FACTOR = 1.1f,
-            SPEED_WALK = 1,
-            SPEED_RUN = 2;
+            RUN_BREAKPOINT = 4f,
+            SLOW_RATE = 0.2f,
+            SLOW_FACTOR = 1.03f,
+            SPEED_WALK = 0.25f,
+            SPEED_RUN = 0.25f;
 
     public Pedestrian(String skinRef, Color skinColor, String clothesRef, String hairRef, Color hairColor, float x, float y) {
         setSkin(skinRef, skinColor);
@@ -93,10 +93,12 @@ public class Pedestrian implements Updateable, CameraRenderable {
                 if (!isWalking)
                     speed += SLOW_RATE;
                 flip = true;
+                System.out.println("LEFT");
             } else if (speed > 0) {
                 if (!isWalking)
                     speed -= SLOW_RATE;
                 flip = false;
+                System.out.println("RIGHT");
             }
         }
         isWalking = false;
@@ -120,7 +122,6 @@ public class Pedestrian implements Updateable, CameraRenderable {
 
     @Override
     public void render(SpriteBatch batch, Camera camera) {
-
         skin.render(batch, x + FRAME_DECAL_X - camera.getPosition(), y + FEET_DECAL, flip, skinColor);
         clothes.render(batch, x + FRAME_DECAL_X - camera.getPosition(), y + FEET_DECAL, flip);
         hair.render(batch, x + FRAME_DECAL_X - camera.getPosition(), y + FEET_DECAL, flip, hairColor);

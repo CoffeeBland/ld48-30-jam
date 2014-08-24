@@ -1,4 +1,4 @@
-package com.coffeebland.carto;
+package com.coffeebland.game.carto;
 
 import java.util.Collection;
 import java.util.HashSet;

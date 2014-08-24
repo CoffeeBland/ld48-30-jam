@@ -1,4 +1,4 @@
-package com.coffeebland.carto;
+package com.coffeebland.game.carto;
 
 /**
  * Created by dagothig on 8/23/14.
