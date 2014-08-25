@@ -27,9 +27,9 @@ import java.util.Set;
 public class GameState extends State<GameState.GameStateInfo> {
     public static final int
             MAX_BATTERY = 5,
-            BATTERY_DURATION = 1500,
+            BATTERY_DURATION = 15000,
             MAX_WIFI = 4,
-            WIFI_DURATION = 1000,
+            WIFI_DURATION = 10000,
             STREET_CHANGE_TRANSITION_DURATION = 250,
             WIFI_RANGE = 250,
             WIFI_EXTENDED_RANGE = 500,

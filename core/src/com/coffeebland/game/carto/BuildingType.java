@@ -4,9 +4,9 @@ package com.coffeebland.game.carto;
  * Created by dagothig on 8/23/14.
  */
 public enum BuildingType {
-    WACDONALD, // Douch / Pop
-    HEAVENBUCKS, // Hipster
-    RAWFYSHZ, // Business
+    WACDONALDS, // Douch / Pop
+    RATSBUCKS, // Hipster
+    RAWFYSHES, // Business
     NONAME, // Punk
     SUPERCOIN, //
     COMICSANS, // Geek

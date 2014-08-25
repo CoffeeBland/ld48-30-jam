@@ -113,8 +113,8 @@ public class AppTindun extends PhoneApp {
 
             bounds = font.getBounds(DATE_BTN);
             dateBtn.x = refX + (bg.getWidth() / 2 - bounds.width / 2) * imageScale;
-            dateBtn.y = refY + MARGIN * imageScale;
-            font.draw(batch, DATE_BTN, dateBtn.x, dateBtn.y);
+            dateBtn.y = refY + MARGIN;
+            font.draw(batch, DATE_BTN, dateBtn.x, dateBtn.y + bounds.height + MARGIN);
         }
     }
 

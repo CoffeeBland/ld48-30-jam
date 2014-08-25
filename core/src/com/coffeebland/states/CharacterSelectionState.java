@@ -33,7 +33,7 @@ public class CharacterSelectionState extends State {
     public CharacterSelectionState() {
         super();
 
-        setBackgroundColor(new Color(0x666666FF));
+        setBackgroundColor(new Color(0x222222FF));
 
         bg = ColorUtil.whitePixel();
         font = FontUtil.normalFont(18);
@@ -41,21 +41,29 @@ public class CharacterSelectionState extends State {
 
         camera = new Camera();
         camera.setPosition(0);
+
+        if (HAIRS == null) {
+            Class tupleClass = new Tuple<String, Integer>("", 1).getClass();
+            HAIRS = (Tuple<String, Integer>[])Array.newInstance(tupleClass, 8);
+            HAIRS[0] = new Tuple<String, Integer>("sprites/character/char_hair_short.png", 0x050510FF);
+            HAIRS[1] = new Tuple<String, Integer>("sprites/character/char_hair_short.png", 0x888888FF);
+            HAIRS[2] = new Tuple<String, Integer>("sprites/character/char_hair_short.png", 0xFFFFFFFF);
+            HAIRS[3] = new Tuple<String, Integer>("sprites/character/char_hair_short.png", 0xAA8833FF);
+            HAIRS[4] = new Tuple<String, Integer>("sprites/character/char_hair_short.png", 0xEEAA11FF);
+            HAIRS[5] = new Tuple<String, Integer>("sprites/character/char_hair_short.png", 0xFFEE88FF);
+            HAIRS[6] = new Tuple<String, Integer>("sprites/character/char_hair_short.png", 0xFF8800FF);
+            HAIRS[7] = new Tuple<String, Integer>("sprites/character/char_hair_short.png", 0x4477DDFF);
+        }
+
         character = new Pedestrian(
-            "sprites/character/char_male.png", new Color(SKINS[SKINS.length-1]),
-            "sprites/character/char_male_clothes1.png",
-            "sprites/character/char_hair_short.png",
-            Color.WHITE.cpy(), 0, (Gdx.graphics.getHeight()-300) / HotSpot.UPSCALE_RATE);
+                "sprites/character/char_male.png", new Color(SKINS[SKINS.length-1]),
+                "sprites/character/char_male_clothes1.png",
+                "sprites/character/char_hair_short.png", new Color(HAIRS[0].getB()),
+                0, (Gdx.graphics.getHeight()-250) / HotSpot.UPSCALE_RATE
+        );
 
         character.setFrameY(Pedestrian.FRAME_WALK);
         character.setFps(15);
-
-        if (HAIRS == null) {
-            Class exempleTupleClass = new Tuple<String, Integer>("", 1).getClass();
-            HAIRS = (Tuple<String, Integer>[])Array.newInstance(exempleTupleClass, 2);
-            HAIRS[0] = new Tuple<String, Integer>("sprites/character/char_hair_short.png", 0xFFFFFFFF);
-            HAIRS[1] = new Tuple<String, Integer>("sprites/character/char_hair_short.png", 0x000000FF);
-        }
 
         selectedButton = CTL_HAIR;
         selectedSkin = SKINS.length-1;
@@ -233,10 +241,6 @@ public class CharacterSelectionState extends State {
     public void render(SpriteBatch batch) {
         float wHeight = Gdx.graphics.getHeight();
         float wWidth = Gdx.graphics.getWidth();
-
-        batch.setColor(new Color(0x222222FF));
-        batch.draw(bg, (wWidth / 2) - 200, 0, 400, wHeight);
-        batch.setColor(Color.WHITE.cpy());
 
         String text = "Character Selection";
         float halfTextWidth = font.getBounds(text).width / 2;

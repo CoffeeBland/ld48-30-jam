@@ -22,7 +22,10 @@ public enum Control {
     ENTER(Input.Keys.ENTER),
     EXIT_MENU(Input.Keys.ESCAPE),
     OPEN_MENU(Input.Keys.ESCAPE),
-    LEFT_CLICK(Input.Buttons.LEFT);
+    LEFT_CLICK(Input.Buttons.LEFT),
+    SKIP_INTRO1(Input.Keys.ESCAPE),
+    SKIP_INTRO2(Input.Keys.SPACE),
+    SKIP_INTRO3(Input.Keys.ENTER);
 
     private static Preferences prefs;
 

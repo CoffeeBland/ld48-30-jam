@@ -11,6 +11,7 @@ import com.coffeebland.game.phone.AppHome;
 import com.coffeebland.game.phone.AppTindun;
 import com.coffeebland.game.phone.Phone;
 import com.coffeebland.input.ClickManager;
+import com.coffeebland.input.Control;
 import com.coffeebland.input.InputDispatcher;
 import com.coffeebland.state.State;
 
@@ -41,7 +42,41 @@ public class IntroState extends State<IntroState.IntroStateInfo> {
     }
 
     public IntroState() {
+        setBackgroundColor(new Color(0x222222FF));
         phone = new Phone();
+
+        InputDispatcher.OnKeyListener skipListener = new InputDispatcher.OnKeyListener() {
+            @Override
+            public void onKeyDown() {
+                if (events.isEmpty()) {
+                    currentTime = -1;
+                    switchToGame();
+                    return;
+                } else {
+                    IntroEvent event = events.remove();
+                    event.onTrigger();
+                    if (event.duration == -1) {
+                        currentTime = -1;
+                        return;
+                    } else {
+                        currentTime += event.duration;
+                    }
+                }
+            }
+
+            @Override
+            public void onKeyUp() {
+
+            }
+
+            @Override
+            public void onKeyIsDown() {
+
+            }
+        };
+        getInputManager().listenTo(Control.SKIP_INTRO1, skipListener);
+        getInputManager().listenTo(Control.SKIP_INTRO2, skipListener);
+        getInputManager().listenTo(Control.SKIP_INTRO3, skipListener);
     }
 
     private Queue<IntroEvent> events;
@@ -60,7 +95,7 @@ public class IntroState extends State<IntroState.IntroStateInfo> {
         info.player = character;
         info.map = Map.getMap();
         info.street = info.map.getStreets().get(0);
-        info.position = 89600;
+        info.position = 0;
         switchToState(GameState.class, Color.WHITE.cpy(), TRANSITION_SHORT, info);
     }
 
@@ -155,6 +190,7 @@ public class IntroState extends State<IntroState.IntroStateInfo> {
         }});
 
         events.add(new IntroEvent(appTransitionDuration) { public void onTrigger() {
+            Gdx.input.setInputProcessor(getInputManager());
             phone.openApp(appHome);
         }});
         events.add(new IntroEvent(appTransitionDuration) { public void onTrigger() {
@@ -167,7 +203,7 @@ public class IntroState extends State<IntroState.IntroStateInfo> {
         events.add(new IntroEvent(msg4Duration) { public void onTrigger() {
             appChat.clearMessages();
             phone.openApp(appChat);
-            appChat.addMessage("me", "There's this dude, " + Candidate.SELECTED_CANDIDATE.getName() + ", think I'm gonna go see him.");
+            appChat.addMessage("me", "There's this \"" + Candidate.SELECTED_CANDIDATE.getName() + "\" person, think I'm gonna go check it out.");
         }});
         events.add(new IntroEvent(msg5Duration) { public void onTrigger() {
             appHome.focus(-1);

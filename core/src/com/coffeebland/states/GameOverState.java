@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.coffeebland.HotSpot;
+import com.coffeebland.input.Control;
+import com.coffeebland.input.InputDispatcher;
 import com.coffeebland.res.Images;
 import com.coffeebland.state.State;
 
@@ -12,6 +14,28 @@ import com.coffeebland.state.State;
  * Created by dagothig on 8/24/14.
  */
 public class GameOverState extends State<String> {
+    public GameOverState() {
+        InputDispatcher.OnKeyListener listener = new InputDispatcher.OnKeyListener() {
+            @Override
+            public void onKeyDown() {
+                switchToState(LogoState.class, Color.BLACK.cpy(), TRANSITION_MEDIUM);
+            }
+
+            @Override
+            public void onKeyUp() {
+
+            }
+
+            @Override
+            public void onKeyIsDown() {
+
+            }
+        };
+        getInputManager().listenTo(Control.SKIP_INTRO1, listener);
+        getInputManager().listenTo(Control.SKIP_INTRO2, listener);
+        getInputManager().listenTo(Control.SKIP_INTRO3, listener);
+    }
+
     private Texture bg;
     private int beforeSwitch = 0;
 

@@ -51,8 +51,15 @@ public class Street implements Updateable, CameraRenderable {
             new Pixmap(Gdx.files.internal("sprites/buildings/city-house-3.png")),
             new Pixmap(Gdx.files.internal("sprites/buildings/city-house-4.png")),
             new Pixmap(Gdx.files.internal("sprites/buildings/city-house-5.png")),
-            new Pixmap(Gdx.files.internal("sprites/buildings/city-house-6.png"))
+            new Pixmap(Gdx.files.internal("sprites/buildings/city-house-6.png")),
+            new Pixmap(Gdx.files.internal("sprites/buildings/city-house-7.png")),
+            new Pixmap(Gdx.files.internal("sprites/buildings/city-house-8.png")),
+            new Pixmap(Gdx.files.internal("sprites/buildings/city-house-9.png")),
+            new Pixmap(Gdx.files.internal("sprites/buildings/city-house-10.png")),
+            new Pixmap(Gdx.files.internal("sprites/buildings/city-house-11.png")),
+            new Pixmap(Gdx.files.internal("sprites/buildings/city-house-12.png"))
     };
+    public static Pixmap COMMERCIAL_STRIPE = new Pixmap(Gdx.files.internal("sprites/buildings/1_stripe.png"));
 
     public Street(float x, float y, float length, boolean isVertical, long seed) {
         this.x = x;
@@ -71,6 +78,7 @@ public class Street implements Updateable, CameraRenderable {
 
     public Set<Street> connectingStreets = new HashSet<Street>();
     private Street[] connectingStreetTiles;
+    private RoadType[] tilesTypes;
     public Set<Building> buildings = new HashSet<Building>();
 
     private void renderSideWalk(Pixmap pixmap, int x, RoadType type) {
@@ -182,6 +190,60 @@ public class Street implements Updateable, CameraRenderable {
            }
         }
     }
+    public void renderBuildings(Pixmap pixmap) {
+        boolean[] buildingPositions = new boolean[tilesTypes.length];
+
+        for (int i = 0; i < tilesTypes.length; i++) {
+            int x = rand.nextInt(tilesTypes.length);
+
+            Pixmap nextBuilding = BG_BUILDINGS[rand.nextInt(BG_BUILDINGS.length)];
+            int w = nextBuilding.getWidth() / TILE_SIZE;
+            int min = -(w / 2);
+            int max = w - (w / 2);
+            boolean valid = true;
+            checkWidth: for (int n = min; n < max; n++) {
+                if ((n + x) < 0 || (n + x) >= tilesTypes.length || buildingPositions[x + n]) {
+                    valid = false;
+                    break checkWidth;
+                }
+
+                switch (tilesTypes[x + n]) {
+                    case START_HORIZONTAL_CROSSING:
+                    case HORIZONTAL_CROSSING:
+                    case END_HORIZONTAL_CROSSING:
+                        valid = false;
+                        break checkWidth;
+                }
+            }
+            if (valid) {
+                pixmap.drawPixmap(nextBuilding,
+                        0, 0, nextBuilding.getWidth(), nextBuilding.getHeight(),
+                        (x + min) * TILE_SIZE, 6 * TILE_SIZE, nextBuilding.getWidth(), nextBuilding.getHeight()
+                );
+                for (int n = min; n < max; n++) {
+                    buildingPositions[x + n] = true;
+                }
+            }
+        }
+
+        for (int i = 0; i < tilesTypes.length; i++) {
+            if (buildingPositions[i]) {
+                continue;
+            }
+
+            switch (tilesTypes[i]) {
+                case START_HORIZONTAL_CROSSING:
+                case HORIZONTAL_CROSSING:
+                case END_HORIZONTAL_CROSSING:
+                    continue;
+            }
+
+            pixmap.drawPixmap(COMMERCIAL_STRIPE,
+                    0, 0, COMMERCIAL_STRIPE.getWidth(), COMMERCIAL_STRIPE.getHeight(),
+                    i * TILE_SIZE, 0, COMMERCIAL_STRIPE.getWidth(), COMMERCIAL_STRIPE.getHeight()
+            );
+        }
+    }
     public void initTexture() {
         if (background.hasValue())
             return;
@@ -190,8 +252,9 @@ public class Street implements Updateable, CameraRenderable {
         ROAD_SHEET.initPixmap("sprites/road.png");
         Pixmap pixmap = new Pixmap((int)length, (ROAD_WIDTH + EARTH_WIDTH + SIDEWALK_WIDTH + OVERFLOW_WIDTH) * TILE_SIZE, Pixmap.Format.RGBA8888);
         connectingStreetTiles = new Street[(int)Math.ceil(length / TILE_SIZE)];
+        tilesTypes = new RoadType[connectingStreetTiles.length];
 
-        Pixmap buildingsPixmap = new Pixmap((int)length, 7 * TILE_SIZE, Pixmap.Format.RGBA8888);
+        Pixmap buildingsPixmap = new Pixmap((int)length, 13 * TILE_SIZE, Pixmap.Format.RGBA8888);
 
         for (int i = 0; i < length; i+= TILE_SIZE) {
             RoadType type = RoadType.REGULAR;
@@ -225,8 +288,9 @@ public class Street implements Updateable, CameraRenderable {
 
             renderRoad(pixmap, i, type);
             renderSideWalk(pixmap, i, type);
-            renderBuildings(buildingsPixmap, i, type);
+            tilesTypes[i / TILE_SIZE] = type;
         }
+        renderBuildings(buildingsPixmap);
 
         background = new Maybe<Texture>(new Texture(pixmap));
         buildingsBackground = new Maybe<Texture>(new Texture(buildingsPixmap));

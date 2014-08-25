@@ -10,7 +10,7 @@ import com.coffeebland.util.Updateable;
  */
 public class Building implements Updateable, CameraRenderable {
     private BuildingType type;
-    private double position;
+    private float position;
     private Street street;
 
     @Override
