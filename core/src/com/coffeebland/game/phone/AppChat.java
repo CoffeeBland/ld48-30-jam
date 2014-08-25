@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.coffeebland.input.ClickManager;
+import com.coffeebland.res.Images;
 import com.coffeebland.util.ColorUtil;
 import com.coffeebland.util.FontUtil;
 import com.coffeebland.util.Tuple;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
  */
 public class AppChat extends PhoneApp {
     public AppChat() {
-        bg = ColorUtil.whitePixel();
+        bg = Images.get("sprites/phone/chat_background.png");
         listeners = new ClickManager.OnClickListener[] {
 
         };
@@ -37,20 +38,20 @@ public class AppChat extends PhoneApp {
     @Override
     public void render(SpriteBatch batch, float refX, float refY, float imageScale) {
         batch.setColor(new Color(0xEFEFEFFF));
-        batch.draw(bg, refX, refY, 234 * imageScale, 319 * imageScale);
+        batch.draw(bg, refX, refY, bg.getWidth() * imageScale, bg.getHeight() * imageScale);
 
         int i = 0;
         for (Tuple<String, String> message : messages) {
             float usernameHeight = font.getBounds(message.getA()).height;
-            float messageHeight = font.getWrappedBounds(message.getB(), 234f-24).height;
-            float baseY = refY + (319 * imageScale) - i - 12;
+            float messageHeight = font.getWrappedBounds(message.getB(), bg.getWidth()-24).height;
+            float baseY = refY + (bg.getHeight() * imageScale) - i - 12;
             batch.setColor(new Color(0x333333FF));
-            batch.draw(bg, refX + 6, baseY + 4 - 22, (234 * imageScale) - 12, 22);
+            batch.draw(bg, refX + 6, baseY + 4 - 22, (bg.getWidth() * imageScale) - 12, 22);
             batch.setColor(Color.WHITE.cpy());
             font.setColor(Color.WHITE.cpy());
             font.draw(batch, message.getA(), refX + 12, baseY);
             font.setColor(Color.BLACK.cpy());
-            font.drawWrapped(batch, message.getB(), refX + 12, baseY - 24, 234 - 24);
+            font.drawWrapped(batch, message.getB(), refX + 12, baseY - 24, bg.getWidth() - 24);
             i += messageHeight + usernameHeight + (12 * 2);
         }
     }

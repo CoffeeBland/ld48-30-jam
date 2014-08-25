@@ -11,6 +11,10 @@ public abstract class PhoneApp implements Updateable {
     protected ClickManager.OnClickListener[] listeners;
     protected Phone phone;
 
+    public ClickManager.OnClickListener[] getListeners() {
+        return listeners;
+    }
+
     public abstract void render(SpriteBatch batch, float refX, float refY, float imageScale);
     @Override
     public abstract void update(float delta);

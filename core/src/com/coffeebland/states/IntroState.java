@@ -1,28 +1,59 @@
 package com.coffeebland.states;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.coffeebland.game.Candidate;
 import com.coffeebland.game.Pedestrian;
 import com.coffeebland.game.carto.Map;
-import com.coffeebland.game.carto.Street;
 import com.coffeebland.game.phone.AppChat;
 import com.coffeebland.game.phone.AppHome;
+import com.coffeebland.game.phone.AppTindun;
 import com.coffeebland.game.phone.Phone;
+import com.coffeebland.input.ClickManager;
+import com.coffeebland.input.InputDispatcher;
 import com.coffeebland.state.State;
+
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 /**
  * Created by kiasaki on 23/08/2014.
  */
 public class IntroState extends State<IntroState.IntroStateInfo> {
+    private static final int
+        initialDuration = 0,
+        msg1Duration = 10000,
+        msg2Duration = 2000,
+        msg3Duration = 2500,
+        appTransitionDuration = 750,
+        tinderDuration = -1,
+        msg4Duration = 2000,
+        msg5Duration = 3000;
+
+    public static abstract class IntroEvent {
+        public IntroEvent(int duration) {
+            this.duration = duration;
+        }
+
+        public abstract void onTrigger();
+        public int duration;
+    }
+
     public IntroState() {
         phone = new Phone();
     }
 
+    private Queue<IntroEvent> events;
+
     private Pedestrian character;
     private Phone phone;
-    private AppChat app;
-    private float timeIn = 0;
-    private boolean[] messagesSent = { false, false, false, false, false };
+    private AppChat appChat;
+    private AppTindun appTindun;
+    private AppHome appHome;
+    private float currentTime;
+    private InputDispatcher input;
+    private ClickManager clickMgr;
 
     public void switchToGame() {
         GameState.GameStateInfo info = new GameState.GameStateInfo();
@@ -45,27 +76,24 @@ public class IntroState extends State<IntroState.IntroStateInfo> {
 
     @Override
     public void update(float delta) {
-        timeIn += delta;
-
-        if (timeIn > 2000 && messagesSent[0] == false) {
-            messagesSent[0] = true;
-            app.addMessage("Frederik", "Hey, dude, you NEED to download this app called Tindoune. Text me what you think!");
-            // TEMP
-            switchToGame();
-        }
-        if (timeIn > 7000 && messagesSent[1] == false) {
-            messagesSent[1] = true;
-            app.addMessage("Frederik", "Waiting...");
-        }
-        if (timeIn > 9000 && messagesSent[2] == false) {
-            messagesSent[2] = true;
-            app.addMessage("Me", "Okay okay, getting it ...");
-        }
-
-        if (timeIn > 12000 && messagesSent[3] == false) {
-            messagesSent[3] = true;
-            phone.openApp(new AppHome());
-            //app = new TinderApp();
+        if (currentTime != -1) {
+            currentTime -= delta;
+            while (currentTime < 0) {
+                if (events.isEmpty()) {
+                    currentTime = -1;
+                    switchToGame();
+                    break;
+                } else {
+                    IntroEvent event = events.remove();
+                    event.onTrigger();
+                    if (event.duration == -1) {
+                        currentTime = -1;
+                        break;
+                    } else {
+                        currentTime += event.duration;
+                    }
+                }
+            }
         }
 
         phone.update(delta);
@@ -73,13 +101,78 @@ public class IntroState extends State<IntroState.IntroStateInfo> {
 
     @Override
     public void onTransitionInStart(IntroStateInfo info) {
-        timeIn = 0;
-
+        currentTime = 0;
         character = info.character;
-        phone.setHandColor(character.getSkinColor());
         phone.showPhone(character, this);
-        app = new AppChat();
-        phone.openApp(app);
+        appChat = new AppChat();
+        Candidate.SELECTED_CANDIDATE = Candidate.STICK_MAN;
+        appTindun = new AppTindun(Candidate.SELECTED_CANDIDATE);
+        appHome = new AppHome();
+        input = new InputDispatcher();
+        clickMgr = new ClickManager(input);
+
+        events = new ArrayDeque<IntroEvent>();
+
+        events.add(new IntroEvent(initialDuration) { public void onTrigger() {
+            phone.openApp(appChat);
+        }});
+        events.add(new IntroEvent(msg1Duration) { public void onTrigger() {
+            appChat.addMessage("Frederik", "Hey, dude, today's the big Tindun event, select a complete stranger and meet them at 9:00 P.M. for a date. You HAVE to participate, I'm sick of you seeing you alone!");
+        }});
+        events.add(new IntroEvent(msg2Duration) { public void onTrigger() {
+            appChat.addMessage("Frederik", "Waiting...");
+        }});
+        events.add(new IntroEvent(msg3Duration) { public void onTrigger() {
+            appChat.clearMessages();
+            appChat.addMessage("Frederik", "Waiting...");
+            appChat.addMessage("Me", "Okay okay, getting on it ...");
+        }});
+
+        events.add(new IntroEvent(appTransitionDuration) { public void onTrigger() {
+            appHome.focus(-1);
+            phone.openApp(appHome);
+        }});
+        events.add(new IntroEvent(appTransitionDuration) { public void onTrigger() {
+            appHome.focus(1);
+        }});
+        events.add(new IntroEvent(appTransitionDuration) { public void onTrigger() {
+            appHome.focus(-1);
+        }});
+
+        events.add(new IntroEvent(tinderDuration) { public void onTrigger() {
+            appTindun.setListener(new AppTindun.OnCandidateSelected() {
+                @Override
+                public void candidateSelected(Candidate candidate) {
+                    currentTime = 0;
+                    Candidate.SELECTED_CANDIDATE = candidate;
+                }
+            });
+            for (ClickManager.OnClickListener listener : appTindun.getListeners()) {
+                clickMgr.addButton(listener);
+            }
+            Gdx.input.setInputProcessor(input);
+            phone.openApp(appTindun);
+        }});
+
+        events.add(new IntroEvent(appTransitionDuration) { public void onTrigger() {
+            phone.openApp(appHome);
+        }});
+        events.add(new IntroEvent(appTransitionDuration) { public void onTrigger() {
+            appHome.focus(2);
+        }});
+        events.add(new IntroEvent(appTransitionDuration) { public void onTrigger() {
+            appHome.focus(-1);
+        }});
+
+        events.add(new IntroEvent(msg4Duration) { public void onTrigger() {
+            appChat.clearMessages();
+            phone.openApp(appChat);
+            appChat.addMessage("me", "There's this dude, " + Candidate.SELECTED_CANDIDATE.getName() + ", think I'm gonna go see him.");
+        }});
+        events.add(new IntroEvent(msg5Duration) { public void onTrigger() {
+            appHome.focus(-1);
+            appChat.addMessage("Frederik", "Nice, wish you good luck.");
+        }});
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.coffeebland.game.phone;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.coffeebland.game.Candidate;
 import com.coffeebland.input.ClickManager;
 import com.coffeebland.res.ImageSheet;
 import com.coffeebland.res.Images;
@@ -29,7 +30,7 @@ public class AppHome extends PhoneApp {
             new ClickManager.OnClickListener(new Rectangle(1, 1, APP_SIZE, APP_SIZE)) {
                 @Override
                 public void onClick() {
-                    phone.openApp(new AppTindun());
+                    phone.openApp(new AppTindun(Candidate.SELECTED_CANDIDATE));
                 }
             },
             // Chat
@@ -65,7 +66,11 @@ public class AppHome extends PhoneApp {
 
     private Texture phoneBack;
     private ImageSheet phoneApps;
+    private int focus = -1;
 
+    public void focus(int appNum) {
+        focus = appNum;
+    }
 
     @Override
     public void render(SpriteBatch batch, float refX, float refY, float imageScale) {
@@ -88,7 +93,7 @@ public class AppHome extends PhoneApp {
             listeners[i].region.x = x;
             listeners[i].region.y = y;
             phoneApps.render(batch, (int)x, (int)y, 0, i + 1, false);
-            if (listeners[i].buttonStatus) {
+            if (listeners[i].buttonStatus || focus == i) {
                 phoneApps.render(batch, (int) x, (int) y, 0, 0, false);
             }
         }
