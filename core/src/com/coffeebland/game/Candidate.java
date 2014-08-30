@@ -10,14 +10,16 @@ import java.util.Map;
  * Created by dagothig on 8/24/14.
  */
 public enum Candidate {
-    STICK_MAN("Stick Man", "sprites/candidates/candidate.png"),
-    CHIX("Chix", "sprites/candidates/candidate.png");
+    BUSINESS("Catherine", "sprites/candidates/date_business.png"),
+    GEEK("3L173", "sprites/candidates/date_geek.png"),
+    HIPSTER("Lovecat", "sprites/candidates/date_hipster.png"),
+    POP("xxxLillyxxx", "sprites/candidates/date_pop.png"),
+    PUNK("Radical Pussy", "sprites/candidates/date_punk.png");
 
     static {
-        STICK_MAN.stats.put(Stat.HIPSTER, 75);
     }
 
-    public static Candidate SELECTED_CANDIDATE = STICK_MAN;
+    public static Candidate SELECTED_CANDIDATE = POP;
 
     private Candidate(String name, String imgRef) {
         this.name = name;

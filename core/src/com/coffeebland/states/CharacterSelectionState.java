@@ -239,8 +239,13 @@ public class CharacterSelectionState extends State {
 
     @Override
     public void render(SpriteBatch batch) {
+        HotSpot.UPSCALE_RATE = 2;
+
         float wHeight = Gdx.graphics.getHeight();
         float wWidth = Gdx.graphics.getWidth();
+
+        camera.setPosition(0);
+        character.setY((wHeight-250) / HotSpot.UPSCALE_RATE);
 
         String text = "Character Selection";
         float halfTextWidth = font.getBounds(text).width / 2;

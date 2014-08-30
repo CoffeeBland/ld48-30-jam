@@ -76,7 +76,8 @@ public class AppTindun extends PhoneApp {
         batch.draw(bg, refX, refY, bg.getWidth() * imageScale, bg.getHeight() * imageScale);
         Texture candidateText = currentCandidate.getImage();
         batch.draw(candidateText,
-                refX + (bg.getWidth() / 2 - candidateText.getWidth() / 2) * imageScale, refY + (bg.getHeight() / 2 - candidateText.getHeight() / 2) * imageScale,
+                refX + (bg.getWidth() / 2 - candidateText.getWidth() / 2) * imageScale,
+                refY,
                 candidateText.getWidth() * imageScale, candidateText.getHeight() * imageScale
         );
 

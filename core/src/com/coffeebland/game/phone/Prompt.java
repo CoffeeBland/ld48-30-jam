@@ -10,8 +10,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.coffeebland.input.ClickManager;
 import com.coffeebland.input.Control;
 import com.coffeebland.input.InputDispatcher;
-import com.coffeebland.state.State;
-import com.coffeebland.states.LogoState;
 import com.coffeebland.util.ColorUtil;
 import com.coffeebland.util.FontUtil;
 import com.coffeebland.util.Renderable;

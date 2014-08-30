@@ -46,18 +46,27 @@ public class Pedestrian implements Updateable, CameraRenderable {
     private boolean flip, isWalking, holdCell = false;
     private int animTransitionDuration = 0, animTransitionRemaining = 0;
     private boolean isLeaving;
-    private boolean needsAnimation = false;
 
     public boolean isHoldingCell() {
         return holdCell;
     }
     public void raiseCell() {
+        if (speed == 0 && !holdCell) {
+            clearQueue();
+            queueFrame(1);
+            queueFrame(2);
+            queueFrame(3);
+        }
         holdCell = true;
-        needsAnimation = true;
     }
     public void lowerCell() {
+        if (speed == 0 && holdCell) {
+            clearQueue();
+            queueFrame(4);
+            queueFrame(5);
+            queueFrame(6);
+        }
         holdCell = false;
-        needsAnimation = true;
     }
 
     public void setSkin(String ref, Color skinColor) {
@@ -142,6 +151,7 @@ public class Pedestrian implements Updateable, CameraRenderable {
         speed = 0;
         yBeforeTransition = y;
         setFps(CYCLE_FRAMERATE);
+        setSingleFrame(-1);
     }
     public void animLeave(int duration) {
         animTransitionRemaining = animTransitionDuration = duration;
@@ -149,6 +159,7 @@ public class Pedestrian implements Updateable, CameraRenderable {
         speed = 0;
         yBeforeTransition = y;
         setFps(CYCLE_FRAMERATE);
+        setSingleFrame(-1);
     }
 
     public void updateAnims(float delta) {
@@ -203,7 +214,6 @@ public class Pedestrian implements Updateable, CameraRenderable {
                 } else {
                     setFrameY(FRAME_RUN);
                 }
-                needsAnimation = false;
             } else if (speed != 0) {
                 clearQueue();
                 if (holdCell) {
@@ -211,23 +221,10 @@ public class Pedestrian implements Updateable, CameraRenderable {
                 } else {
                     setFrameY(FRAME_WALK);
                 }
-                needsAnimation = false;
             } else {
                 if (isHoldingCell()) {
-                    if (needsAnimation) {
-                        queueFrame(1);
-                        queueFrame(2);
-                        queueFrame(3);
-                        needsAnimation = false;
-                    }
                     setSingleFrame(4);
                 } else {
-                    if (needsAnimation) {
-                        queueFrame(4);
-                        queueFrame(5);
-                        queueFrame(6);
-                        needsAnimation = false;
-                    }
                     setSingleFrame(0);
                 }
                 setFrameY(FRAME_STAND);

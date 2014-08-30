@@ -3,7 +3,6 @@ package com.coffeebland.game.phone;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -79,6 +78,7 @@ public class Phone implements Updateable, Renderable {
         });
     }
 
+    private Pedestrian player;
     private Texture phoneCase, hand, whitePixelText;
     private ImageSheet homeButton, powerButton;
     private boolean renderPhone;
@@ -193,6 +193,7 @@ public class Phone implements Updateable, Renderable {
     }
 
     public void showPhone(Pedestrian player, State state) {
+        this.player = player;
         renderPhone = true;
         skinColor = player.getSkinColor();
         if (transition <= 0) {
@@ -214,6 +215,7 @@ public class Phone implements Updateable, Renderable {
         else
             transition = TRANSITION_DURATION - transition;
 
+        player.lowerCell();
         Gdx.input.setInputProcessor(previousInputProcessor);
     }
 

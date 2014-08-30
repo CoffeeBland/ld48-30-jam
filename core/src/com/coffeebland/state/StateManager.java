@@ -5,9 +5,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.coffeebland.game.carto.Street;
-import com.coffeebland.game.Pedestrian;
-import com.coffeebland.states.GameState;
 import com.coffeebland.util.Maybe;
 import com.coffeebland.util.MusicManager;
 import com.coffeebland.util.Renderable;
@@ -66,6 +63,7 @@ public class StateManager implements Updateable, Renderable {
             remainingTransitionTime /= 2;
         }
         hasSwitched = false;
+        Gdx.input.setInputProcessor(null);
     }
     public void switchToState(Class<? extends State> stateType, Color transitionColor, long transitionLength, Object switchArgs) {
         switchToState(stateType, transitionColor, transitionLength, new Maybe<Object>(switchArgs));

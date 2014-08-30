@@ -3,7 +3,6 @@ package com.coffeebland.input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.coffeebland.util.Maybe;
 import com.coffeebland.util.Updateable;
 
 import java.util.ArrayList;

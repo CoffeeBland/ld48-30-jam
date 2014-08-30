@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.coffeebland.input.ClickManager;
 import com.coffeebland.res.Images;
-import com.coffeebland.util.ColorUtil;
 import com.coffeebland.util.FontUtil;
 import com.coffeebland.util.Tuple;
 

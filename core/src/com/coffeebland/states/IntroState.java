@@ -140,7 +140,7 @@ public class IntroState extends State<IntroState.IntroStateInfo> {
         character = info.character;
         phone.showPhone(character, this);
         appChat = new AppChat();
-        Candidate.SELECTED_CANDIDATE = Candidate.STICK_MAN;
+        Candidate.SELECTED_CANDIDATE = Candidate.POP;
         appTindun = new AppTindun(Candidate.SELECTED_CANDIDATE);
         appHome = new AppHome();
         input = new InputDispatcher();
@@ -152,7 +152,7 @@ public class IntroState extends State<IntroState.IntroStateInfo> {
             phone.openApp(appChat);
         }});
         events.add(new IntroEvent(msg1Duration) { public void onTrigger() {
-            appChat.addMessage("Frederik", "Hey, dude, today's the big Tindun event, select a complete stranger and meet them at 9:00 P.M. for a date. You HAVE to participate, I'm sick of you seeing you alone!");
+            appChat.addMessage("Frederik", "Hey, dude, today's the big Tindun event, select a complete stranger and meet them at 9:00 P.M. for a date. You HAVE to participate, I'm sick of seeing you alone!");
         }});
         events.add(new IntroEvent(msg2Duration) { public void onTrigger() {
             appChat.addMessage("Frederik", "Waiting...");

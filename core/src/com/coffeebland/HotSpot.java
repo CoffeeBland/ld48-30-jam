@@ -1,20 +1,12 @@
 package com.coffeebland;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.loaders.MusicLoader;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.coffeebland.state.StateManager;
 import com.coffeebland.states.LogoState;
-import sun.audio.AudioPlayer;
-
-import javax.sound.sampled.AudioSystem;
 
 public class HotSpot extends ApplicationAdapter {
     public static int UPSCALE_RATE = 1;

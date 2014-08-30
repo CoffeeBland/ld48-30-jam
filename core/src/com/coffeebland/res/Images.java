@@ -1,7 +1,6 @@
 package com.coffeebland.res;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;

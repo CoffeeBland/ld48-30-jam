@@ -2,7 +2,10 @@ package com.coffeebland.input;
 
 import com.badlogic.gdx.math.Rectangle;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by dagothig on 8/24/14.

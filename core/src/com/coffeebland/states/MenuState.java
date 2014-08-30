@@ -2,7 +2,6 @@ package com.coffeebland.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,7 +12,6 @@ import com.coffeebland.util.ButtonUtil;
 import com.coffeebland.util.ColorUtil;
 import com.coffeebland.util.FontUtil;
 
-import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
 /**

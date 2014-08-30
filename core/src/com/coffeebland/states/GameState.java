@@ -5,11 +5,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.coffeebland.HotSpot;
-import com.coffeebland.game.carto.Map;
-import com.coffeebland.game.carto.Street;
 import com.coffeebland.game.Camera;
 import com.coffeebland.game.Pedestrian;
 import com.coffeebland.game.UIOverlay;
+import com.coffeebland.game.carto.Map;
+import com.coffeebland.game.carto.Street;
 import com.coffeebland.game.phone.Phone;
 import com.coffeebland.input.Control;
 import com.coffeebland.input.InputDispatcher;
@@ -29,7 +29,7 @@ public class GameState extends State<GameState.GameStateInfo> {
             MAX_BATTERY = 5,
             BATTERY_DURATION = 15000,
             MAX_WIFI = 4,
-            WIFI_DURATION = 10000,
+            WIFI_DURATION = 1000,
             STREET_CHANGE_TRANSITION_DURATION = 250,
             WIFI_RANGE = 250,
             WIFI_EXTENDED_RANGE = 500,
@@ -124,6 +124,7 @@ public class GameState extends State<GameState.GameStateInfo> {
             @Override
             public void onKeyDown() {
                 if (player.hasValue()) {
+                    player.getValue().raiseCell();
                     phone.showPhone(player.getValue(), GameState.this);
                 }
             }

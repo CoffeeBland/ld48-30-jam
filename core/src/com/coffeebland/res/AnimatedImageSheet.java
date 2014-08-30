@@ -4,7 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.coffeebland.util.Maybe;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 /**
  * Created by dagothig on 8/23/14.

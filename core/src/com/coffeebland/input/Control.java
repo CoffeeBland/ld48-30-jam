@@ -3,7 +3,6 @@ package com.coffeebland.input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Preferences;
-import com.coffeebland.util.Maybe;
 
 import java.util.Collection;
 import java.util.HashSet;
